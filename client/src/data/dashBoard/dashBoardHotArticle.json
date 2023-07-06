@@ -1,0 +1,23 @@
+{
+  "headers": [
+    {
+      "title": "發文者",
+      "key": "uid"
+    },
+    {
+      "title": "標題",
+      "key": "title"
+    },
+
+    {
+      "title": "發布時間",
+      "key": "create_time"
+    },
+    {
+      "title": "瀏覽次數",
+      "key": "watch_count",
+      "defaultSortOrder": "descend",
+      "sorter": "default"
+    }
+  ]
+}

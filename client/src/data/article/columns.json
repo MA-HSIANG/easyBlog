@@ -1,0 +1,28 @@
+{
+  "headers": [
+    {
+      "title": "編號",
+      "key": "id"
+    },
+    {
+      "title": "分類",
+      "key": "category_id"
+    },
+    {
+      "title": "發文者",
+      "key": "uid"
+    },
+    {
+      "title": "標題",
+      "key": "title"
+    },
+    {
+      "title": "描述",
+      "key": "description"
+    },
+    {
+      "title": "發布時間",
+      "key": "create_time"
+    }
+  ]
+}
