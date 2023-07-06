@@ -1,0 +1,2 @@
+# easyBlog
+new project
