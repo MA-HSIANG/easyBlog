@@ -122,26 +122,29 @@ async function loadListData() {
   }
 }
 
-//--使用者id
+// //--使用者id
 
-const user_id = ref(0);
-const user_name = ref("");
+// const user_id = ref(0);
+// const user_name = ref("");
 
-async function getUserData() {
-  try {
-    const res = await authUserLogin.getUserData();
-    user_id.value = res.data.results.id;
-    user_name.value = res.data.results.account;
-  } catch (error) {}
-}
+// async function getUserData() {
+//   try {
+//     const res = await authUserLogin.getUserData();
+//     user_id.value = res.data.results.id;
+//     user_name.value = res.data.results.account;
+//   } catch (error) {}
+// }
 
 //觀看文章用戶計數
 async function userWatchCount() {
   try {
+    const userData = await authUserLogin.getUserData();
+    const user_id = await userData.data.results.id;
     const options = {
       blog_id: route.query.id,
-      user_id: user_id.value,
+      user_id,
     };
+
     const res = await authUserLogin.watchArticleAdd(options);
     loadWatchCount();
     return res;
@@ -172,6 +175,9 @@ function isCheckLogined(loginStatus) {
     loadListData();
   }
 }
+onMounted(() => {
+  userWatchCount();
+});
 watchEffect(() => {
   //渲染預覽markdown格式文件
   html.value = xss.process(
@@ -180,7 +186,6 @@ watchEffect(() => {
     )
   );
   loadListData();
-  userWatchCount();
   loadWatchCount();
   loadUpdateCommentCount();
 });

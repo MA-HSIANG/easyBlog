@@ -178,6 +178,7 @@ export const useAuthUserLogin = defineStore("authUser", () => {
       blog_id: options.blog_id,
       user_id: options.user_id,
     });
+   
     return res.data;
   }
   //頭貼上傳

@@ -6,6 +6,7 @@ async function watchArticle(options) {
     connection.query(
       `select * from watch where blog_id=${options.blog_id} and user_id=${options.user_id}`,
       (err, results) => {
+
         try {
           if (err) {
             console.log(err, "獲取觀看紀錄錯誤");
