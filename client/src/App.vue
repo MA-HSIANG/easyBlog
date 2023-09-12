@@ -1,10 +1,12 @@
 <template>
   <NConfigProvider :theme-overrides="themeOverrides">
-    <RouterView v-if="isReload" v-slot="{ Component }">
+    <!-- <RouterView v-if="isReload" v-slot="{ Component }">
       <transition name="fade">
         <component :is="Component" />
       </transition>
-    </RouterView>
+    </RouterView> -->
+
+    <RouterView v-if="isReload"></RouterView>
   </NConfigProvider>
 </template>
 
