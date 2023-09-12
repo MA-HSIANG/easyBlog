@@ -1,11 +1,6 @@
-const { promisify } = require("util");
 require("dotenv").config();
-const {
-  resgist,
-  login,
-  updateRole,
-
-} = require("../models/userModel.js");
+const { promisify } = require("util");
+const { resgist, login, updateRole } = require("../models/userModel.js");
 const { findUser } = require("../controller/userController.js");
 const { genid } = require("../utils/Dbutils.js");
 
@@ -73,7 +68,7 @@ exports.verifyToken = async (req, res, next) => {
     //驗證都是正確的user
     const decoded = await promisify(jwt.verify)(token, secret);
     const checkUser = await findUser(decoded.id);
-  
+
     if (checkUser.results.token !== token) {
       res.status(401).json({
         msg: "該帳號已經在另外一個客戶端登錄!!請確認是否為本人或通知管理人員處理!!",
