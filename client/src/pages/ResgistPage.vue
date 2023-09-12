@@ -1,6 +1,7 @@
 <template>
-  <div class="login-content">
-    <n-card :title="isLogin ? '登入' : '註冊'">
+  <SingUpLayout>
+    <template #title> 歡迎使用EasyBlog! </template>
+    <template #form>
       <n-form
         n-form
         ref="resgistForm"
@@ -10,13 +11,16 @@
       >
         <n-form-item path="account" label="帳號">
           <n-input
+            size="large"
             v-model:value="user.account"
             type="text"
             placeholder="請輸入帳號"
+            :disabled="false"
           />
         </n-form-item>
         <n-form-item path="email" label="郵件">
           <n-input
+            size="large"
             :disabled="!user.account"
             v-model:value="user.email"
             type="email"
@@ -25,63 +29,47 @@
         </n-form-item>
         <n-form-item path="password" label="密碼">
           <n-input
+            size="large"
             :disabled="!user.email"
             v-model:value="user.password"
             type="password"
             placeholder="請輸入密碼"
           />
         </n-form-item>
+        <div class="btn_submit">
+          <n-button
+            type="primary"
+            :disabled="
+              user.account.length < 6 ||
+              user.password.length < 6 ||
+              user.email === null
+            "
+            @click="userResgist"
+            >註冊</n-button
+          >
+        </div>
+        <div class="btn_change">
+          <n-button @click="toLogin" tag="a" text>有帳號了?點我登錄!</n-button>
+        </div>
       </n-form>
-      <template #footer>
-        <n-space>
-          <div class="btn_isLogin">
-            <n-button v-if="!isLogin" @click="isLogOrRes" tag="a" text
-              >有帳號了?馬上登入!!</n-button
-            >
-            <n-button v-if="isLogin" @click="isLogOrRes" tag="a" text
-              >沒有帳號?馬上註冊!!</n-button
-            >
-            <n-button v-if="isLogin" @click="toDashboard" tag="a" text
-              >管理員登入</n-button
-            >
-            <n-button
-              :disabled="!user.password"
-              @click="isLogin ? userLogin() : userResgist()"
-              >{{ isLogin ? "登入" : "註冊" }}</n-button
-            >
-          </div>
-        </n-space>
-      </template>
-    </n-card>
-  </div>
+    </template>
+  </SingUpLayout>
 </template>
 
 <script setup>
-import {
-  defineComponent,
-  onMounted,
-  reactive,
-  inject,
-  provide,
-  ref,
-  nextTick,
-  watchEffect,
-} from "vue";
+import { onMounted, reactive, inject, provide, ref } from "vue";
 import { useRouter } from "vue-router";
-import { NForm, NFormItem, NInput, NSpace } from "naive-ui";
-import { useAuthUserLogin } from "../store/user/authUser";
-import { useAuthCategory } from "../store/category/operate";
-import { useAuthArticle } from "../store/article/list";
+import SingUpLayout from "../components/SignUpLayout.vue";
+import { resgist, login } from "../api/authApi";
+import { useUserStore } from "../store/user/authSave";
 
 const router = useRouter();
 const msg = inject("message");
 const notfiy = inject("notification");
 const dialog = inject("dialog");
 const loading = inject("loadingBar");
-const authCategory = useAuthCategory();
-const authArticle = useAuthArticle();
-const authUserLogin = useAuthUserLogin();
 const resgistForm = ref(null);
+
 const rules = {
   account: [
     {
@@ -137,92 +125,63 @@ const user = reactive({
   email: "",
   password: "",
 });
-function isLogOrRes() {
-  isLogin.value = !isLogin.value;
-}
-function userResgist() {
+
+const userResgist = () => {
   resgistForm.value?.validate(async (errors) => {
     if (!errors) {
-      const res = await authUserLogin.useUserResgist(user);
-      if (res.code === 402) {
-        msg.error(res.msg);
-      }
-      if (res.code === 200) {
-        msg.success(res.msg);
-        user.account = "";
-        user.email = "";
-        user.password = "";
-        isLogOrRes();
-      }
-    } else {
-      msg.error("請輸入完整註冊資料");
-      return;
-    }
-  });
-}
-//登入
-async function userLogin() {
-  resgistForm.value?.validate(async (errors) => {
-    try {
-      if (!errors) {
-        const res = await authUserLogin.useUserLogin(user);
-        console.log(res);
-        if (res.code === 402) {
-          msg.error(res.msg);
-        }
-        if (res.code === 200) {
-          msg.success(res.msg);
+      try {
+        const res = await resgist(user);
+        if (res.status === 201) {
+          msg.success(res.data.data.msg);
           user.account = "";
           user.email = "";
           user.password = "";
-          router.replace("/");
+          router.replace("/login");
         }
-        if (res.code === 403) {
-          msg.error(res.msg);
+      } catch (err) {
+        if (err.response.status === 400) {
+          msg.error(err.response.data.msg);
         }
       }
-    } catch (error) {}
-  });
-}
-//跳轉
-function toDashboard() {
-  router.push("/login");
-}
-
-//user驗證
-
-async function checkUserLogin() {
-  try {
-    const userToken = authUserLogin.getToken();
-    const res = await authUserLogin.isLoginIn(userToken);
-    if (res.code === 200) {
-      router.replace("/userCenter");
     } else {
-      router.replace("/resgist");
+      msg.error("請輸入正確的註冊資料...");
+      return;
     }
-  } catch (error) {
-    console.error(error);
-  }
-}
+  });
+};
 
-watchEffect(() => {
-  checkUserLogin();
-});
+//跳轉
+const toLogin = () => {
+  router.replace("/login");
+};
 </script>
-
 <style lang="scss" scoped>
-.login-content {
+@import "../common/style/main.scss";
+@import "../common/style/color.scss";
+@import "../common/style/signupRwd.scss";
+.n-form {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 25vw;
-  height: 85vh;
+  flex-direction: column;
+  gap: 1.8rem;
 
-  .btn_isLogin {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    width: 20vw;
+  .btn_submit {
+    .n-button {
+      width: 100%;
+      padding: 1.5rem 0;
+      font-size: 1.8rem;
+    }
+  }
+  .btn_change {
+    text-align: center;
+    margin-top: 2rem;
+    .n-button {
+      font-size: 1.6rem;
+      color: $font-gray;
+      letter-spacing: 1.2px;
+      &:hover {
+        color: $primary-color;
+      }
+    }
   }
 }
 </style>

@@ -1,0 +1,12 @@
+{
+  "menus": [
+    { "label": "個人資料", "key": "myData", "href": "/userCenter" },
+
+    {
+      "label": "我的點讚",
+      "key": "myLike",
+      "href": "/userCenter/myLike"
+    },
+    { "label": "設定", "key": "setting", "href": "/userCenter/setting" }
+  ]
+}

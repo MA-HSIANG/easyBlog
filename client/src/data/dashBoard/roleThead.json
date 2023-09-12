@@ -1,0 +1,28 @@
+{
+  "thead": [
+    {
+      "label": "編號",
+      "key": "id"
+    },
+    {
+      "label": "角色",
+      "key": "role"
+    },
+    {
+      "label": "帳號",
+      "key": "account"
+    },
+    {
+      "label": "郵件",
+      "key": "email"
+    },
+    {
+      "label": "創建時間",
+      "key": "create_time"
+    },
+    {
+      "label": "操作",
+      "key": "action"
+    }
+  ]
+}

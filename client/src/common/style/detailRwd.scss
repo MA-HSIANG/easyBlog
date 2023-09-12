@@ -1,0 +1,28 @@
+@import "../style/color.scss";
+//800
+@media (max-width: 50rem) {
+  .new--content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
+//900
+@media (max-width: 56.25rem) {
+  .subComment-input {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+
+    textarea {
+      height: 6rem !important;
+    }
+
+    .mobile--commemnt-submit {
+      display: flex;
+      color: $primary-color;
+      font-size: 3rem;
+    }
+  }
+}

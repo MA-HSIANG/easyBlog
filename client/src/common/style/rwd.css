@@ -1,0 +1,257 @@
+@media (max-width: 74.9rem) {
+  html {
+    font-size: 56.25%;
+  }
+}
+@media (max-width: 70.3rem) {
+  html {
+    font-size: 50%;
+  }
+  .container .header-container {
+    box-shadow: none;
+  }
+  .container .header-container .nav-content {
+    position: absolute;
+    left: 0;
+    transition: all 0.3s ease-in;
+    z-index: 999;
+    background-color: rgba(2, 133, 199, 0.8549019608);
+    width: 100%;
+    height: 50vh;
+    overflow-x: hidden;
+  }
+  .container .header-container .nav-content ul {
+    display: block;
+    transform: translate(45%, 10%);
+    font-size: 5rem;
+  }
+  .container .header-container .nav-content ul li {
+    padding: 3rem 0;
+    border: none;
+  }
+  .container .header-container .nav-content ul li:hover {
+    color: #f8fafc;
+    border-bottom: none;
+  }
+  .container .header-container .btn-mobile-nav {
+    display: flex;
+  }
+  .container .header-container .btn-mobile-nav .n-icon {
+    font-size: 5rem;
+    color: #e0f2fe;
+  }
+  .container .header-container .btn-mobile-nav .n-icon:hover {
+    color: #f8fafc;
+  }
+  .container .header-container .open--mobile-nav {
+    top: 4.8rem;
+    opacity: 1;
+  }
+  .container .header-container .close--mobile-nav {
+    top: -100rem;
+    opacity: 0;
+  }
+  .container .header-container .searchLogin-container {
+    gap: 3rem;
+  }
+  .container .header-container .mobile-none {
+    display: none;
+  }
+  .container .header-container .mobile--searchLogin-container {
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    gap: 1.5rem;
+  }
+  .container .header-container .mobile--searchLogin-container .search-container {
+    position: relative;
+    transition: opacity 0.3s;
+  }
+  .container .header-container .mobile--searchLogin-container .search-container input {
+    display: inline-block;
+    border-radius: 2px;
+    outline: none;
+    padding: 0.5rem 0.75rem;
+    caret-color: #075985;
+    padding-left: 2rem;
+  }
+  .container .header-container .mobile--searchLogin-container .search-container input::-moz-placeholder {
+    font-size: 1.85rem;
+    letter-spacing: 0.5px;
+    color: #6b7280;
+  }
+  .container .header-container .mobile--searchLogin-container .search-container input::placeholder {
+    font-size: 1.85rem;
+    letter-spacing: 0.5px;
+    color: #6b7280;
+  }
+  .container .header-container .mobile--searchLogin-container .search-container input:focus {
+    border-color: #075985;
+    box-shadow: 0 0 5px #075985, 0 0 5px #075985;
+  }
+  .container .header-container .mobile--searchLogin-container .search-container .search-icon {
+    position: absolute;
+    bottom: 0;
+    transform: translate(0, 10%);
+    color: #6b7280;
+    font-size: 2rem;
+  }
+  .container .header-container .mobile--searchLogin-container .login-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+  }
+  .container .header-container .mobile--searchLogin-container .login-container .nav--avatar-container {
+    background-color: #fff;
+    overflow: hidden;
+    border-radius: 50%;
+    width: 2.5rem;
+  }
+  .container .header-container .mobile--searchLogin-container .login-container .nav--avatar-container img {
+    width: 100%;
+  }
+  .container .header-container .mobile--searchLogin-container .login-container span {
+    font-size: 1.8rem;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    color: #e0f2fe;
+  }
+  .container .header-container .mobile--searchBar {
+    background-color: #0284c7;
+    width: 100%;
+    height: 50vh;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 1;
+    transition: opacity 0.3s;
+    z-index: 999;
+  }
+  .container .header-container .mobile--searchBar .mobile--search-closeBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    background-color: #e0f2fe;
+    color: #4b5563;
+    border-radius: 50%;
+    position: absolute;
+    top: -50%;
+    right: 0;
+    transform: translate(-100%, 50%);
+  }
+  .container .header-container .mobile--searchBar .mobile--searchBar-input {
+    display: flex;
+    justify-content: center;
+    margin-top: 4.8rem;
+    position: relative;
+  }
+  .container .header-container .mobile--searchBar .mobile--searchBar-input .mobile--search-icon {
+    position: absolute;
+    top: 0;
+    left: 25%;
+    transform: translate(55%, 25%);
+    color: #6b7280;
+    font-size: 2rem;
+  }
+  .container .header-container .mobile--searchBar .mobile--searchBar-input input {
+    width: 50%;
+    padding: 0.75rem 3rem;
+  }
+  .container .header-container .mobile-line {
+    border: 1px solid #e0f2fe;
+    margin: 5rem 0;
+    width: 100%;
+  }
+  .container .header-container .mobile--tags-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding-top: 3rem;
+  }
+  .container .header-container .close-mobileSearch {
+    position: absolute;
+    top: 10rem;
+    opacity: 0;
+  }
+}
+@media (max-width: 60.3rem) {
+  .hot-container {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+    height: 150rem !important;
+  }
+  .main-container {
+    grid-template-columns: 1fr !important;
+    width: 75%;
+  }
+  .main-container .article--title {
+    text-align: center;
+  }
+  .main-container .article--list-container .content-container {
+    grid-template-columns: 1fr;
+  }
+  .main-container .article--list-container .content-container .article--img-container {
+    overflow: hidden;
+    border-radius: 6px;
+  }
+  .main-container .article--list-container .content-container .article--img-container img {
+    width: 100%;
+    height: 100%;
+    transition: all 0.3s;
+  }
+  .main-container .article--list-container .content-container .article--img-container img:hover {
+    transform: scale(1.1);
+  }
+  .main-container .article--new-title {
+    text-align: center;
+  }
+  .main-container .new--content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .main-container .new--content-container .new--list-content {
+    width: 80%;
+  }
+  .main-container .new--content-container .new--list-content .content-container {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 46.25rem) {
+  .main-container {
+    display: block !important;
+  }
+  .new--content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+@media (max-width: 27.8rem) {
+  html {
+    font-size: 43%;
+  }
+  .left-container {
+    padding: 0 1rem;
+  }
+}
+@media (max-width: 33.43rem) {
+  html {
+    font-size: 40%;
+  }
+}
+@media (max-width: 26.75rem) {
+  html {
+    font-size: 31%;
+  }
+}
+@media (max-width: 22.5rem) {
+  html {
+    font-size: 30%;
+  }
+  .header-container {
+    padding: 0 5rem !important;
+  }
+}/*# sourceMappingURL=rwd.css.map */

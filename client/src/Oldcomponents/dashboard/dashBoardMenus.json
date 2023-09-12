@@ -1,0 +1,53 @@
+{
+  "menus": [
+    {
+      "label": "權限管理",
+      "key": "limits",
+      "children": [
+        {
+          "type": "group",
+          "label": "管理員",
+          "key": "admin",
+          "children": [
+            {
+              "label": "創建",
+              "key": "create_admin",
+              "href": "/dashBoard/createAdmin"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "文章管理",
+      "key": "manage article",
+      "href": "/dashBoard/article"
+    },
+    {
+      "label": "分類管理",
+      "key": "manage category",
+      "href": "/dashBoard/category"
+    },
+    {
+      "label": "查看",
+      "key": "examine",
+      "children": [
+        {
+          "type": "group",
+          "label": "返回",
+          "key": "black",
+          "children": [
+            {
+              "label": "後台首頁",
+              "key": "dashBoardIndex",
+              "href": "/dashBoard"
+            },
+            { "label": "返回首頁", "key": "toHome", "href": "/" }
+          ]
+        }
+      ]
+    },
+
+    { "label": "退出登入", "key": "logout", "href": "logout" }
+  ]
+}

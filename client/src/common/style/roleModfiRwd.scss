@@ -1,0 +1,67 @@
+//940
+@media (max-width: 58.75rem) {
+  .dashBoard-container {
+    width: 100rem;
+  }
+}
+//925
+
+@media (max-width: 57.81rem) {
+  .dashBoard-container {
+    width: 90rem;
+    overflow-x: scroll;
+  }
+}
+//858
+@media (max-width: 53.625rem) {
+  .dashBoard-container {
+    width: 80rem;
+
+    .role--table-container {
+      width: 80rem;
+      overflow-x: scroll;
+
+      .n-table {
+        font-size: 1.5rem;
+        .btn-container {
+          .n-button {
+            font-size: 1.5rem;
+          }
+        }
+      }
+    }
+  }
+}
+//826
+@media (max-width: 51.626rem) {
+  .dashBoard-container {
+    width: 70rem !important;
+    overflow-x: scroll !important;
+  }
+}
+//758
+@media (max-width: 49.18rem) {
+  .dashBoard-container {
+    width: 70rem !important;
+  }
+}
+//700
+@media (max-width: 43.75rem) {
+  .dashBoard-container {
+    width: 50rem !important;
+  }
+}
+//512
+@media (max-width: 32rem) {
+  .role--table-container {
+   
+    width: 45% !important;
+  }
+}
+
+//600
+@media (max-width: 20rem) {
+  .dashBoard-container {
+    width: 40rem !important;
+  }
+}

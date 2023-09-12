@@ -6,11 +6,11 @@
     },
     {
       "title": "分類",
-      "key": "category_id"
+      "key": "category_name"
     },
     {
       "title": "發文者",
-      "key": "uid"
+      "key": "name"
     },
     {
       "title": "標題",
@@ -18,7 +18,9 @@
     },
     {
       "title": "描述",
-      "key": "description"
+      "key": "description",
+      "width": 300,
+      "ellipsis": true
     },
     {
       "title": "發布時間",

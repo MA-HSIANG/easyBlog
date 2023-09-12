@@ -1,0 +1,30 @@
+@media (max-width: 85.625rem) {
+  .dashBoard-container {
+    width: 110rem !important;
+  }
+}
+@media (max-width: 81.25rem) {
+  .dashBoard-container {
+    width: 100rem !important;
+  }
+}
+@media (max-width: 58.75rem) {
+  .dashBoard-container {
+    width: 90rem !important;
+  }
+}
+@media (max-width: 53.125rem) {
+  .dashBoard-container {
+    width: 80rem !important;
+  }
+}
+@media (max-width: 48.56rem) {
+  .dashBoard-container {
+    width: 70rem !important;
+  }
+}
+@media (max-width: 43.75rem) {
+  .dashBoard-container {
+    width: 50rem !important;
+  }
+}/*# sourceMappingURL=dataPanelRwd.css.map */

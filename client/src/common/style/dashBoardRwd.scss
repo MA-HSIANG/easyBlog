@@ -1,0 +1,117 @@
+//1372
+@media (max-width: 85.75rem) {
+  .dashBoard-container {
+    width: 100rem !important;
+    .tab-container {
+      width: 100rem !important;
+    }
+  }
+}
+//940
+@media (max-width: 58.75rem) {
+  .dashBoard-container {
+    width: 80rem !important;
+    .form-container {
+      .n-form {
+        width: 80% !important;
+      }
+    }
+
+    .tab-container {
+      width: 130rem;
+      .n-data-table {
+        font-size: 1.6rem;
+      }
+    }
+    .paginator-container {
+      margin-top: 1rem;
+    }
+  }
+}
+//884
+@media (max-width: 55.31rem) {
+  //整體
+  .dashBoard-container {
+    //文章表格
+    .tab-container {
+      width: 80rem !important;
+    }
+  }
+}
+//800
+@media (max-width: 50rem) {
+  .dashBoard-container {
+    width: 60rem !important;
+    .form-container {
+      //文章格式
+      .n-form {
+        width: 70 !important;
+        .n-button {
+          width: 100%;
+        }
+      }
+    }
+
+    .tab-container {
+      width: 60rem !important;
+    }
+  }
+}
+//620
+@media (max-width: 38.75rem) {
+  .dashBoard-container {
+    width: 40rem !important;
+    .form-container {
+      //文章格式
+      .n-form {
+        width: 60 !important;
+      }
+    }
+
+    .tab-container {
+      width: 60rem !important;
+    }
+  }
+}
+//568
+@media (max-width: 35.5rem) {
+  nav {
+    padding-right: 10rem !important;
+  }
+  .dashBoard-container {
+    .form-container {
+      .n-form {
+        width: 35% !important;
+      }
+    }
+    .tab-container {
+      width: 50rem !important;
+      .n-data-table {
+        font-size: 2rem !important;
+      }
+    }
+  }
+}
+
+//428
+@media (max-width: 26.75rem) {
+  //menu
+  ul {
+    li {
+      padding: 0 1rem !important;
+      &:hover {
+        border-left: 1px solid #075985 !important;
+      }
+    }
+    .active {
+      border-left: 1px solid #075985 !important;
+      margin-left: 1px !important;
+    }
+  }
+}
+//280
+@media (max-width: 17.5rem) {
+  nav {
+    padding-right: 15rem !important;
+  }
+}

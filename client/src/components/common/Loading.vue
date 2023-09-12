@@ -7,5 +7,5 @@
 </template>
 
 <script setup>
-import { NSpin } from "naive-ui";
+
 </script>

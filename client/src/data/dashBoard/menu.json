@@ -1,0 +1,24 @@
+{
+  "menus": [
+    {
+      "label": "後台首頁",
+      "key": "dashBoard",
+      "href": "/dashBoard"
+    },
+    {
+      "label": "權限管理",
+      "key": "manage authorization",
+      "href": "/dashBoard/authorization"
+    },
+    {
+      "label": "文章管理",
+      "key": "manage article",
+      "href": "/dashBoard/article"
+    },
+    {
+      "label": "分類管理",
+      "key": "manage category",
+      "href": "/dashBoard/category"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+@media (max-width: 50rem) {
+  .new--content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}/*# sourceMappingURL=detailRwd.css.map */

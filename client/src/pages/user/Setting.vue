@@ -1,104 +1,42 @@
 <template>
-  <div class="content">
-    <div class="loading" v-if="isLoading">
-      <loading>資料加載中...</loading>
-    </div>
-    <n-card
-      v-if="!isLoading"
-      :bordered="true"
-      title="個人資料"
-      :segmented="{
-        content: true,
-        footer: 'soft',
-      }"
-    >
-      <template #default>
-        <div v-show="!isEdit" class="isEdit">
-          <div class="dataList">
-            <n-form>
-              <n-form-item label="編號">
-                {{ userLists.id }}
-              </n-form-item>
-              <n-form-item label="帳號">
-                {{ userLists.account }}
-              </n-form-item>
-              <n-form-item label="信箱">
-                {{ userLists.email }}
-              </n-form-item>
-            </n-form>
-          </div>
-          <div class="avatar">
-            <n-avatar round :size="120" :src="userLists.headerImg" />
-            <span>圖片最大5MB</span>
-          </div>
-        </div>
-        <div v-show="isEdit" class="isEdit">
-          <div class="dataList">
-            <n-form
-              n-form
-              ref="updateUserForm"
-              :rules="rules"
-              :model="userLists"
-              @keydown.enter.prevent
-            >
-              <n-form-item path="id" label="編號">
-                {{ userLists.id }}
-              </n-form-item>
-              <n-form-item path="account" label="帳號">
-                {{ userLists.account }}
-              </n-form-item>
-
-              <n-form-item path="email" label="郵件">
-                <n-input
-                  v-model:value="userLists.email"
-                  type="email"
-                  placeholder="請輸入郵件"
-                />
-              </n-form-item>
-            </n-form>
-          </div>
-          <div class="avatar">
-            <upload
-              v-model:imgFile="imgFile"
-              v-model:previewShow="previewShow"
-            ></upload>
-            <span>圖片最大5MB</span>
-          </div>
-        </div>
-      </template>
-      <template #action>
-        <n-button @click="editor" v-show="!isEdit">{{ "編輯" }}</n-button>
-        <n-button @click="isSave" v-show="isEdit">{{ "儲存" }}</n-button>
-      </template>
-    </n-card>
-  </div>
+  <loading class="loadingBar" v-if="isLoading">儲存中...</loading>
+  <UserDataCard
+    v-else
+    :userDatas="userDatas"
+    :likeCount="pageInfo.count"
+    :isUpdate="true"
+  >
+    <template #uploadAvatar>
+      <upload
+        v-model:imgFile="imgFile"
+        v-model:previewShow="previewShow"
+      ></upload>
+    </template>
+    <template #update>
+      <n-input
+        v-model:value="userDatas.email"
+        @keydown.enter="isSave"
+        type="email"
+        placeholder="請輸入郵件"
+      />
+    </template>
+    <template #save>
+      <PrimaryButton @click="isSave">
+        <template #name>送出</template>
+      </PrimaryButton>
+    </template>
+  </UserDataCard>
 </template>
 
 <script setup>
-import {
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  inject,
-  computed,
-  watch,
-  watchEffect,
-} from "vue";
+import { onMounted, reactive, ref, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { NForm, NFormItem, NInput, NAvatar } from "naive-ui";
-
-import { useAuthLogin } from "../../store/user/auth";
-import { useAuthCategory } from "../../store/category/operate";
-import { useAuthArticle } from "../../store/article/list";
-import { useAuthUserLogin } from "../../store/user/authUser";
+import UserDataCard from "../../components/userCenter/UserDataCard.vue";
 import Upload from "../../components/Upload.vue";
-import Loading from "../../components/common/Loading.vue";
-const $axios = inject("$axios");
-const AuthLogin = useAuthLogin();
-const useCategory = useAuthCategory();
-const AuthArticle = useAuthArticle();
-const authUserLogin = useAuthUserLogin();
+import loading from "../../components/common/Loading.vue";
+import { transformTime } from "../../utils/transformTime";
+import PrimaryButton from "../../components/common/PrimaryButton.vue";
+
 const router = useRouter();
 const route = useRoute();
 const msg = inject("message");
@@ -106,36 +44,56 @@ const updateUserForm = ref(null);
 const isEdit = ref(false);
 const imgFile = ref(null);
 const previewShow = ref(false);
-const userLists = reactive({
+const userDatas = reactive({
   id: "",
-  headerImg: "",
-  account: "",
+  avatar: "",
+  name: "",
   email: "",
+  create_time: "",
 });
+
 const isLoading = ref(false);
-//後端取的資料
-async function userDates() {
+
+import { uploadAvatar, updateUser } from "../../api/userApi";
+import { getLikeBlogDatas } from "../../api/userApi";
+
+//驗證取得資料
+const getUserData = async () => {
   try {
-    isLoading.value = true;
-    const lists = await authUserLogin.getUserData();
-    if (lists.data.code === 200) {
-      userLists.id = lists.data.results.id;
-      userLists.headerImg = lists.data.results.headerImg;
-      userLists.account = lists.data.results.account;
-      userLists.email = lists.data.results.email;
-      isLoading.value = false;
+    if (route.meta.userData) {
+      const data = await route.meta.userData;
+      userDatas.id = data.user.id;
+      userDatas.avatar = data.user.avatar;
+      userDatas.name = data.user.account;
+      userDatas.email = data.user.email;
+      userDatas.create_time = transformTime(data.user.create_time);
+      oldAvatar.value = data.user.avatar;
+    } else {
+      removeToken();
+    }
+  } catch (error) {}
+};
+//分頁參數
+const pageInfo = reactive({
+  page: 1,
+  pageSize: 8,
+  //列表資料總數
+  count: 0,
+  //總頁數
+  pageCount: 0,
+});
+const loadLikeBlogs = async () => {
+  try {
+    const res = await getLikeBlogDatas(pageInfo);
+    if (res.status === 200) {
+      pageInfo.count = res.data.counts;
+      pageInfo.pageCount = Math.ceil(pageInfo.count / pageInfo.pageSize);
     }
   } catch (error) {
-    if (lists.results.code === 403) {
-      msg.error(lists.results.msg);
-      previewShow.value = false;
-    }
+    console.error(error);
   }
-}
-//編輯
-function editor() {
-  isEdit.value = true;
-}
+};
+
 //儲存
 async function isSave() {
   try {
@@ -144,30 +102,24 @@ async function isSave() {
     if (imgFile) {
       const formData = new FormData();
       formData.append("file", imgFile.value);
-      const img = await authUserLogin.uploadAvatar(formData);
-      userLists.headerImg = img;
+      const img = await uploadAvatar(formData);
+      userDatas.avatar =
+        img.data.data.url || process.env.VITE_YOUR_AVATAR_DEFAULT_URL;
     }
 
-    const res = await authUserLogin.updateUserData(userLists);
-    if (res.code === 200) {
-      previewShow.value = false;
-      userLists.email = "";
+    const res = await updateUser(userDatas);
+    if (res.data.data.status === "success") {
+      msg.success(res.data.data.msg);
       imgFile.value = null;
-      userLists.headerImg = "";
-      msg.success(res.msg);
-      userDates();
-      isLoading.value = false;
-    }
-
-    if (res.code === 403) {
-      msg.error(res.msg);
       previewShow.value = false;
-      userDates();
     }
+    isLoading.value = false;
   } catch (error) {
     console.log(error);
   }
+
   isEdit.value = false;
+  isLoading.value = false;
 }
 const rules = {
   email: [
@@ -187,51 +139,37 @@ const rules = {
   ],
 };
 
-watchEffect(() => {
-  userDates();
+onMounted(() => {
+  getUserData();
+  loadLikeBlogs();
 });
 </script>
 
 <style lang="scss" scoped>
-.content,
-.loading {
+@import "../../common/style/color.scss";
+:deep(.n-upload-dragger),
+n-upload :deep(n-upload--dragger-inside) {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40vw;
-  height: 85vh;
-
-  .isEdit {
-    display: flex;
-    justify-content: space-around;
-    .dataList {
-      width: 177px;
-    }
-    .avatar {
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      span {
-        text-align: center;
-        font-size: 0.75rem;
-        font-weight: 300;
-      }
-      :deep(.n-upload-dragger),
-      n-upload :deep(n-upload--dragger-inside) {
-        padding: 0;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        overflow: hidden;
-        width: 120px;
-        height: 120px;
-        svg {
-          font-size: 80px;
-        }
-      }
-    }
+  padding: 0;
+  border-radius: 50%;
+  width: 9rem;
+  height: 8rem;
+  border: 2px solid $primary-color;
+  overflow: hidden;
+  .n-icon {
+    font-size: 8rem;
   }
+  .n-image {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.n-button {
+  width: 100%;
+  font-size: 2rem;
+  padding: 2rem 0;
 }
 </style>

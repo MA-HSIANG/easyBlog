@@ -1,0 +1,285 @@
+@import "../style/color.scss";
+
+//1200
+@media (max-width: 74.9rem) {
+  html {
+    font-size: 56.25%;
+  }
+}
+
+//1125
+@media (max-width: 70.3rem) {
+  html {
+    font-size: 50%;
+  }
+  .container {
+    .header-container {
+      box-shadow: none;
+
+      .nav-content {
+        position: absolute;
+        left: 0;
+        transition: all 0.3s ease-in;
+        z-index: 999;
+        background-color: $mobileBar-color;
+        width: 100%;
+        height: 50vh;
+        overflow-x: hidden;
+
+        ul {
+          display: block;
+          transform: translate(45%, 10%);
+          font-size: 5rem;
+
+          li {
+            padding: 3rem 0;
+            &:hover {
+              border: transparent;
+              background-color: transparent;
+              color: $primary-light;
+            }
+          }
+        }
+      }
+
+      .btn-mobile-nav {
+        display: flex;
+        .n-icon {
+          font-size: 5rem;
+          color: $primary-light;
+          &:hover {
+            color: $font-light-gray;
+          }
+        }
+      }
+      .open--mobile-nav {
+        top: 6rem;
+        opacity: 1;
+      }
+      .close--mobile-nav {
+        top: -100rem;
+        opacity: 0;
+      }
+      .searchLogin-container {
+        gap: 3rem;
+      }
+      .mobile-none {
+        display: none;
+      }
+
+      .mobile--searchLogin-container {
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+        gap: 1.5rem;
+
+        .search-container {
+          position: relative;
+          transition: opacity 0.3s;
+          input {
+            display: inline-block;
+            border-radius: 3px 0 0 3px;
+            outline: none;
+            padding: 0.5rem 0.75rem;
+            caret-color: $fouce-color;
+            padding-left: 2rem;
+            &::placeholder {
+              font-size: 1.85rem;
+              letter-spacing: 0.5px;
+              color: $font-gray;
+            }
+            &:focus {
+              border-color: $fouce-color;
+              box-shadow: 0 0 5px $fouce-color, 0 0 5px $fouce-color;
+            }
+          }
+          .search-icon {
+            position: absolute;
+            bottom: 0;
+            transform: translate(0, 10%);
+            color: $font-gray;
+            font-size: 2rem;
+          }
+        }
+        .login-container {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          cursor: pointer;
+          .nav--avatar-container {
+            background-color: #fff;
+            overflow: hidden;
+            border-radius: 50%;
+            width: 2.5rem;
+            img {
+              width: 100%;
+            }
+          }
+          span {
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            color: $primary-light;
+          }
+        }
+      }
+      .mobile--searchBar {
+        background-color: $primary-color;
+        width: 100%;
+        height: 85vh;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 1;
+        transition: opacity 0.3s;
+        z-index: 999;
+        .mobile--search-closeBtn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 2.5rem;
+          background-color: $primary-light;
+          color: $font-black-gray;
+          border-radius: 50%;
+          position: absolute;
+          top: -50%;
+          right: 5%;
+          transform: translate(-100%, 100%);
+        }
+
+        .mobile--searchBar-input {
+          display: flex;
+          justify-content: center;
+          margin-top: 4.8rem;
+          input {
+            width: 50%;
+            padding: 0.5rem 0.75rem;
+          }
+          .mobile--searchBar-submit {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: $primary-light;
+            padding: 0 1.2rem;
+            border-radius: 0 3px 3px 0;
+            .n-icon {
+              color: $font-gray;
+            }
+          }
+        }
+      }
+      .mobile-line {
+        border: 1px solid $primary-light;
+        margin: 5rem 0;
+        width: 100%;
+      }
+      .mobile--tags-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 2rem;
+        padding-top: 3rem;
+      }
+      .close-mobileSearch {
+        position: absolute;
+        top: 10rem;
+        opacity: 0;
+      }
+    }
+  }
+}
+//965
+@media (max-width: 60.3rem) {
+  .hot-container {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+    height: 150rem !important;
+  }
+
+  .main-container {
+    grid-template-columns: 1fr !important;
+    width: 75%;
+    .article--title {
+      text-align: center;
+    }
+    .article--list-container {
+      .content-container {
+        grid-template-columns: 1fr;
+
+        .article--img-container {
+          overflow: hidden;
+          border-radius: 6px;
+
+          img {
+            width: 100%;
+            height: 100%;
+            transition: all 0.3s;
+            &:hover {
+              transform: scale(1.1);
+            }
+          }
+        }
+      }
+    }
+    .article--new-title {
+      justify-content: center;
+    }
+    .new--content-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .new--list-content {
+        width: 80%;
+        .content-container {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
+}
+
+//740
+@media (max-width: 46.25rem) {
+  .main-container {
+    display: block !important;
+    // grid-template-columns: 1fr !important;
+    // max-width: 90%;
+  }
+  .new--content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+//445
+@media (max-width: 27.8rem) {
+  html {
+    font-size: 43%;
+  }
+  .left-container {
+    padding: 0 1rem;
+  }
+}
+//535
+
+@media (max-width: 33.43rem) {
+  html {
+    font-size: 40%;
+  }
+}
+//428
+@media (max-width: 26.75rem) {
+  html {
+    font-size: 31%;
+    .header-container {
+      padding: 0 5rem !important;
+    }
+  }
+}
+//360
+@media (max-width: 22.5rem) {
+  html {
+    font-size: 30%;
+  }
+}

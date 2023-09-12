@@ -1,0 +1,14 @@
+@media (max-width: 26.75rem) {
+  .card-container .n-card {
+    max-width: 70rem !important;
+  }
+  .card-container .n-card .card--btn-container .n-button {
+    width: 50% !important;
+  }
+  .card-container .btn_submit .n-button {
+    font-size: 2.5rem !important;
+  }
+  .card-container .btn_change .n-button {
+    font-size: 2.5rem !important;
+  }
+}/*# sourceMappingURL=signupRwd.css.map */

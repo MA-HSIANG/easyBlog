@@ -1,0 +1,35 @@
+//1395
+@media (max-width: 87.18rem) {
+  .dashBoard-container {
+    width: 80rem !important;
+  }
+}
+//800
+@media (max-width: 50rem) {
+  .dashBoard-container {
+    width: 70rem !important;
+    .card--content-container {
+      gap: 8rem !important;
+      p {
+        letter-spacing: -1px !important;
+      }
+    }
+  }
+}
+//712
+@media (max-width: 44.5rem) {
+  .dashBoard-container {
+    width: 50rem !important;
+  }
+}
+//560
+
+@media (max-width: 35rem) {
+  .dashBoard-container {
+    width: 30rem !important;
+    .card--content-container {
+      gap: 5rem !important;
+   
+    }
+  }
+}

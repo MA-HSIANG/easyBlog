@@ -1,0 +1,60 @@
+* {
+  border: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-size: 62.5%;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+menu,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;
+}
+
+textarea {
+  border: none;
+  outline: none;
+  resize: none;
+  background: none;
+}
+
+.link:link, .link:visited {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.container {
+  max-width: 200rem;
+}
+
+.dashBoard-container {
+  width: 120rem;
+  overflow-x: hidden;
+}
+
+.btn-mobile-nav {
+  display: none;
+}
+
+.mobile--searchLogin-container {
+  display: none;
+}
+
+.mobile--tags-container {
+  display: none;
+}/*# sourceMappingURL=main.css.map */

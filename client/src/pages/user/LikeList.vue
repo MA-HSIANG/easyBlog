@@ -1,75 +1,48 @@
 <template>
-  <div class="content">
-    <div class="empty" v-if="likeData.length === 0">
-      <n-empty size="large" description="沒有點讚的文章..."> </n-empty>
+  <loading class="loadingBar" v-if="isLoading">資料加載中...</loading>
+  <div class="dashBoard-container" v-else>
+    <div class="zero-container" v-if="likeData.length === 0">
+      <n-empty></n-empty>
     </div>
-
-    <div>
-      <div class="card_content" v-for="likeList in likeData" v-if="!isLoading">
-        <n-card
-          :bordered="true"
-          :segmented="{
-            content: true,
-            footer: 'soft',
-          }"
-        >
+    <n-grid cols="0:1 600:4" x-gap="8" y-gap="8" y-hap="4" v-else>
+      <n-grid-item span="1" v-for="likeList in likeData" :key="likeList.id">
+        <n-card size="large" hoverable>
           <template #cover>
-            <n-image height="200" :src="likeList.coverImage"></n-image>
+            <img :src="likeList.coverImage" height="200" />
           </template>
-          <template #default>
-            <h2>{{ likeList.title }}</h2>
-            <h3>{{ likeList.description }}</h3>
-          </template>
+          <div class="card--content-container">
+            <h2 @click="toDetail(likeList.id)">{{ likeList.title }}</h2>
+            <p>點讚時間:{{ likeList.create_time }}</p>
+          </div>
         </n-card>
-      </div>
+      </n-grid-item>
+    </n-grid>
+    <div class="pagination-container">
+      <n-pagination
+        v-if="likeData.length > 0"
+        v-model:page="pageInfo.page"
+        :page-count="pageInfo.pageCount"
+        @click="loadLikeBlogs"
+      />
     </div>
-    <n-pagination
-      v-model:page="pageInfo.page"
-      :page-count="pageInfo.pageCount"
-      @click="loadLikeStatus"
-    />
   </div>
 </template>
 
 <script setup>
-import {
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  inject,
-  computed,
-  watch,
-  watchEffect,
-} from "vue";
+import { onMounted, reactive, ref, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { NPagination, NImage, NEmpty } from "naive-ui";
-import { useAuthLogin } from "../../store/user/auth";
-import { useAuthCategory } from "../../store/category/operate";
-import { useAuthArticle } from "../../store/article/list";
-import { useAuthUserLogin } from "../../store/user/authUser";
-import VueMarkdownEditor, { xss } from "@kangc/v-md-editor";
 
-const $axios = inject("$axios");
-const AuthLogin = useAuthLogin();
-const useCategory = useAuthCategory();
-const AuthArticle = useAuthArticle();
-const authUserLogin = useAuthUserLogin();
 const router = useRouter();
 const route = useRoute();
 const msg = inject("message");
 
+import { getLikeBlogDatas } from "../../api/userApi";
+import { transformTime } from "../../utils/transformTime";
+import loading from "../../components/common/Loading.vue";
+const isLoading = ref(false);
 //點讚文章列表
 const likeData = ref([]);
-
-//使用者id
-const userJson = authUserLogin.getUser();
-const user_id = userJson.id;
-const user_name = userJson.account;
-const likeOptions = reactive({
-  user_id,
-});
-//評論頁參數
+//分頁參數
 const pageInfo = reactive({
   page: 1,
   pageSize: 8,
@@ -77,64 +50,69 @@ const pageInfo = reactive({
   count: 0,
   //總頁數
   pageCount: 0,
-  //blog
-  blog_id: route.query.id,
 });
-
-async function loadLikeStatus() {
+const loadLikeBlogs = async () => {
   try {
-    const lists = await authUserLogin.userLikeList(likeOptions, pageInfo);
-    const counts = await authUserLogin.likeListCounts(likeOptions);
-    for (const list of lists) {
-      if (list.content.length > 30) {
-        list.content = list.content.slice(0, 30);
-        list.content += "...";
-      }
-
-      //--------------markdown----------//////////////
-      list.content = xss.process(
-        VueMarkdownEditor.vMdParser.themeConfig.markdownParser.render(
-          list.content
-        )
-      );
+    isLoading.value = true;
+    const res = await getLikeBlogDatas(pageInfo);
+    console.log(res);
+    if (res.status === 200) {
+      res.data.like_blogs = res.data.like_blogs.map((like) => {
+        like.create_time = transformTime(like.create_time);
+        return like;
+      });
+      likeData.value = res.data.like_blogs;
+      pageInfo.count = res.data.counts;
+      pageInfo.pageCount = Math.ceil(pageInfo.count / pageInfo.pageSize);
     }
-
-    likeData.value = lists;
-
-    //分頁
-    pageInfo.count = counts;
-    pageInfo.pageCount = Math.ceil(pageInfo.count / pageInfo.pageSize);
+    isLoading.value = false;
   } catch (error) {
     console.error(error);
   }
-}
+};
+const toDetail = (id) => {
+  router.replace(`/detail/${id}`);
+};
 
 onMounted(() => {
-  loadLikeStatus();
+  loadLikeBlogs();
 });
 </script>
 
 <style lang="scss" scoped>
-.content {
-  display: flex;
-  flex-direction: column;
-  .empty,
-  .loading {
+@import "../../common/style/main.scss";
+@import "../../common/style/color.scss";
+@import "../../common/style/likeListRwd.scss";
+.dashBoard-container {
+  .zero-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: 100vw;
   }
-  div {
-    display: flex;
-    flex-wrap: wrap;
+  .n-card {
+    height: 100%;
+    max-width: 100%;
+
+    .card--content-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10rem;
+      h2 {
+        padding-top: 1rem;
+        font-size: 2.2rem;
+        letter-spacing: 1.1px;
+        color: $font-black;
+      }
+      p {
+        font-size: 1.5rem;
+        font-weight: 300;
+        letter-spacing: 1.1px;
+        color: $font-gray;
+      }
+    }
   }
-  .card_content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 1rem;
+  .pagination-container {
+    margin-top: 1rem;
   }
 }
 </style>

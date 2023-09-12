@@ -2,7 +2,7 @@
   "headers": [
     {
       "title": "發文者",
-      "key": "uid"
+      "key": "name"
     },
     {
       "title": "標題",
@@ -15,7 +15,7 @@
     },
     {
       "title": "瀏覽次數",
-      "key": "watch_count",
+      "key": "view_count",
       "defaultSortOrder": "descend",
       "sorter": "default"
     }

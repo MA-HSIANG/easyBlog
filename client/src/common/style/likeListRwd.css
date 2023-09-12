@@ -1,0 +1,29 @@
+@media (max-width: 87.18rem) {
+  .dashBoard-container {
+    width: 80rem !important;
+  }
+}
+@media (max-width: 50rem) {
+  .dashBoard-container {
+    width: 70rem !important;
+  }
+  .dashBoard-container .card--content-container {
+    gap: 8rem !important;
+  }
+  .dashBoard-container .card--content-container p {
+    letter-spacing: -1px !important;
+  }
+}
+@media (max-width: 44.5rem) {
+  .dashBoard-container {
+    width: 50rem !important;
+  }
+}
+@media (max-width: 35rem) {
+  .dashBoard-container {
+    width: 30rem !important;
+  }
+  .dashBoard-container .card--content-container {
+    gap: 5rem !important;
+  }
+}/*# sourceMappingURL=likeListRwd.css.map */

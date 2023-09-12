@@ -1,63 +1,70 @@
 <template>
-  <div class="login-content">
-    <n-card v-if="!isLoading" title="管理後台登錄">
+  <SingUpLayout>
+    <template #title> 歡迎回到EasyBlog! </template>
+    <template #form>
       <n-form
-        ref="adminFrom"
+        n-form
+        ref="resgistForm"
         :rules="rules"
-        :model="admin"
+        :model="user"
         @keydown.enter.prevent
       >
         <n-form-item path="account" label="帳號">
           <n-input
-            v-model:value="admin.account"
+            size="large"
+            v-model:value="user.account"
             type="text"
             placeholder="請輸入帳號"
           />
         </n-form-item>
+        <n-form-item path="email" label="郵件">
+          <n-input
+            size="large"
+            :disabled="!user.account"
+            v-model:value="user.email"
+            type="email"
+            placeholder="請輸入郵件"
+          />
+        </n-form-item>
         <n-form-item path="password" label="密碼">
           <n-input
-            :disabled="!admin.account"
-            v-model:value="admin.password"
+            size="large"
+            :disabled="!user.email"
+            v-model:value="user.password"
             type="password"
             placeholder="請輸入密碼"
           />
         </n-form-item>
+        <div class="btn_submit">
+          <n-button type="primary" :disabled="!user.password" @click="userLogin"
+            >登錄</n-button
+          >
+        </div>
+        <div class="btn_change">
+          <n-button @click="toResgist" tag="a" text
+            >沒有帳號?點我註冊!</n-button
+          >
+        </div>
       </n-form>
-      <template #footer>
-        <n-checkbox v-model:checked="admin.rember" label="記住我" />
-        <n-button :disabled="!admin.password" @click="login">登錄</n-button>
-      </template>
-    </n-card>
-  </div>
+    </template>
+  </SingUpLayout>
 </template>
 
 <script setup>
-import {
-  onMounted,
-  reactive,
-  inject,
-  provide,
-  ref,
-  nextTick,
-  watchEffect,
-} from "vue";
-import { useRouter, useRoute, onBeforeRouteUpdate } from "vue-router";
-import { NForm, NFormItem, NInput, NCheckbox } from "naive-ui";
-import { useAuthLogin } from "../store/user/auth";
-import { useAuthCategory } from "../store/category/operate";
-import { useAuthArticle } from "../store/article/list";
-import { useAuthUserLogin } from "../store/user/authUser";
+import { onMounted, reactive, inject, provide, ref } from "vue";
+import { useRouter } from "vue-router";
+import SingUpLayout from "../components/SignUpLayout.vue";
+import { resgist, login } from "../api/authApi";
+import { useUserStore } from "../store/user/authSave";
+import { setToken, getToken } from "../utils/verify";
 
 const router = useRouter();
-const route = useRoute();
 const msg = inject("message");
 const notfiy = inject("notification");
 const dialog = inject("dialog");
 const loading = inject("loadingBar");
-const authCategory = useAuthCategory();
-const authArticle = useAuthArticle();
-const authUserLogin = useAuthUserLogin();
-const adminFrom = ref(null);
+const resgistForm = ref(null);
+const auth = useUserStore();
 
 const rules = {
   account: [
@@ -75,6 +82,21 @@ const rules = {
       trigger: ["input", "blur"],
     },
   ],
+  email: [
+    {
+      required: true,
+      validator(rule, val) {
+        if (!val) {
+          return new Error("請輸入郵件...");
+        }
+        if (!/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-z0-9]+$/.test(val)) {
+          return new Error("請輸入正確的電子郵件格式...");
+        }
+        return true;
+      },
+      trigger: ["input", "blur"],
+    },
+  ],
   password: [
     {
       required: true,
@@ -83,7 +105,7 @@ const rules = {
           return new Error("請輸入密碼....");
         }
         if (!/^[a-zA-Z\d]{5,18}$/.test(val)) {
-          return new Error("請輸入6到18個字符以上的英文字母或數字");
+          return new Error("請輸入6至18個字符之間的英文字母或數字");
         }
         return true;
       },
@@ -91,72 +113,101 @@ const rules = {
     },
   ],
 };
-//piain的user狀態
-const authLogin = useAuthLogin();
-//取出儲存狀態
-const userJson = authLogin.getUser();
-const getAccount = userJson.account;
-const getPassword = userJson.password;
-const getRember = userJson.rember;
-//登入狀態
-const admin = reactive({
-  account: getAccount,
-  password: getPassword,
-  rember: getRember == 1 ? true : false,
+
+//註冊
+const isLogin = ref(false);
+const user = reactive({
+  account: "",
+  email: "",
+  password: "",
 });
 
-//登入
-async function login() {
-  adminFrom.value?.validate(async (errors) => {
+const userResgist = () => {
+  resgistForm.value?.validate(async (errors) => {
     if (!errors) {
-      const res = await authLogin.useLogin(admin);
-      if (res.code === 401) {
-        msg.error(res.msg);
-      }
-      if (res.code === 200) {
-        //登入成功傳狀態pinia
-        authLogin.isLogin = true;
-
-        msg.success(res.msg);
-        //登入後更新token到pinia
-        authCategory.token = authLogin.getToken();
-        authArticle.token = authLogin.getToken();
-        authLogin.adminToken = authLogin.getToken();
-        router.replace("/dashBoard");
-      }
-      if (res.code === 500) {
-        msg.error(res.msg);
+      try {
+        const res = await resgist(user);
+        if (res.status === 201) {
+          msg.success(res.data.data.msg);
+          user.account = "";
+          user.email = "";
+          user.password = "";
+          isLogOrRes();
+        }
+      } catch (err) {
+        if (err.response.status === 400) {
+          msg.error(err.response.data.msg);
+        }
       }
     } else {
-      msg.error("請輸入正確帳號密碼");
+      msg.error("請輸入正確的註冊資料...");
       return;
     }
   });
-}
-//damin驗證
-const isAdminLogined = ref(false);
-const adminToken = authLogin.adminToken;
-async function checkAdminLogin() {
-  const res = await authLogin.isLoginIn(adminToken);
-  if (res.code === 200) {
-    isAdminLogined.value = true;
-    router.replace("/dashBoard");
-  } else {
-    router.replace("/login");
-  }
-}
+};
 
-onMounted(() => {
-  checkAdminLogin();
-});
+//登入
+const userLogin = () => {
+  resgistForm.value?.validate(async (errors) => {
+    if (!errors) {
+      try {
+        const res = await login(user);
+
+        if (res.status === 200) {
+          // auth.saveUser(res.data.data.data); //存使用者資料localStorge到pinia
+          setToken(res.data.data.token); //創建token
+          msg.success(res.data.data.msg);
+          user.account = "";
+          user.email = "";
+          user.password = "";
+          router.replace("/");
+        }
+      } catch (err) {
+        console.error(err);
+        if (err.response.status === 400) {
+          msg.error(err.response.data.msg);
+        }
+      }
+    } else {
+      msg.error("請輸入正確的登入資料...");
+      return;
+    }
+  });
+};
+
+//跳轉
+const toResgist = () => {
+  router.push("/Resgist");
+};
 </script>
 
 <style lang="scss" scoped>
-.login-content {
+@import "../common/style/main.scss";
+@import "../common/style/color.scss";
+@import "../common/style/signupRwd.scss";
+.n-form {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 30vw;
-  height: 85vh;
+  flex-direction: column;
+  gap: 1.8rem;
+
+  .btn_submit {
+    .n-button {
+      width: 100%;
+      padding: 1.5rem 0;
+      font-size: 1.8rem;
+    }
+  }
+  .btn_change {
+    text-align: center;
+    margin-top: 2rem;
+    .n-button {
+      font-size: 1.6rem;
+      color: $font-gray;
+      letter-spacing: 1.2px;
+      &:hover {
+        color: $primary-color;
+      }
+    }
+  }
 }
 </style>

@@ -1,0 +1,24 @@
+@media (max-width: 58.75rem) {
+  .dashBoard-container {
+    width: 95% !important;
+  }
+}
+@media (max-width: 53.125rem) {
+  .add-container .n-button {
+    width: 90% !important;
+  }
+  .category--table-container {
+    width: 85% !important;
+    overflow-x: scroll;
+  }
+}
+@media (max-width: 37.25rem) {
+  .category--table-container {
+    width: 90% !important;
+  }
+}
+@media (max-width: 31.25rem) {
+  .category--table-container {
+    width: 85% !important;
+  }
+}/*# sourceMappingURL=categoryRwd.css.map */

@@ -9,12 +9,8 @@
 </template>
 
 <script setup>
-import { ref, nextTick, onMounted, watchEffect, inject } from "vue";
-import { useAxios } from "../common/useAxios";
-import { useAuthLogin } from "../store/user/auth";
-const authLogin = useAuthLogin();
-const token = ref("");
-const $axiosToken = useAxios(true, token);
+import { ref, nextTick, onMounted, inject, watchEffect } from "vue";
+
 const valueHtml = ref("");
 const $init = inject("$init");
 //建立article.content條件
@@ -41,8 +37,8 @@ function handleChange(text, html) {
 }
 async function handleUploadImage(event, insertImage, files) {
   //server Url
-  const serverUrl = $init.renderUrl;
-  // const serverUrl = "https://blog-server-6lno.onrender.com"; //網域上傳
+  const serverUrl = import.meta.env.VITE_YOUR_MK_UPLOAD_URL;
+  // const serverUrl = process.env.YOUR_MK_UPLOAD_PRODUCT_URL; //網域上傳
   // 創建一個 FormData 物件
   const formData = new FormData();
   // 將文件添加到 FormData 物件
@@ -58,9 +54,4 @@ async function handleUploadImage(event, insertImage, files) {
     desc: valueHtml.value,
   });
 }
-watchEffect(() => {
-  if (token) {
-    token.value = authLogin.getToken();
-  }
-});
 </script>

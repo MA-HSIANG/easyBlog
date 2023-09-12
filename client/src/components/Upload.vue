@@ -9,35 +9,27 @@
     :file-list="fileList"
   >
     <n-upload-dragger>
-      <div v-if="!previewShow && !oldImg">
-        <n-icon size="120" :depth="3"><CloudUploadOutline /></n-icon>
+      <div class="upload-icon" v-if="!previewShow && !oldImg">
+        <n-icon :depth="3"><CloudUploadOutline /></n-icon>
       </div>
-      <div v-if="previewShow && !oldImg">
-        <n-image width="120" height="120" :src="previewImageUrl"></n-image>
+      <div class="upload--img-container" v-if="previewShow && !oldImg">
+        <n-image :src="previewImageUrl"></n-image>
       </div>
-      <div v-if="!previewShow && oldImg">
-        <n-image width="120" height="120" :src="oldUrl"></n-image>
+      <div class="upload--img-container" v-if="!previewShow && oldImg">
+        <n-image :src="oldUrl"></n-image>
       </div>
     </n-upload-dragger>
   </n-upload>
 </template>
 
 <script setup>
-import { defineComponent, ref, inject, watchEffect, nextTick } from "vue";
+import { ref, inject, watchEffect, nextTick, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { NUpload, NUploadDragger, NIcon, NImage } from "naive-ui";
-import { useAuthLogin } from "../store/user/auth";
-import { useAuthCategory } from "../store/category/operate";
-import { useAuthArticle } from "../store/article/list";
-import { useAxios } from "../common/useAxios";
 import { CloudUploadOutline } from "@vicons/ionicons5";
 
-const $axios = inject("$axios");
-const AuthLogin = useAuthLogin();
-const AuthArticle = useAuthArticle();
 const router = useRouter();
 const token = ref("");
-const $axiosToken = useAxios(true, token);
 const msg = inject("message");
 
 //封面回傳網址
@@ -59,12 +51,10 @@ const props = defineProps({
   imgFile: {
     type: [File, Object, String, null],
     default: null,
-    required: true,
   },
   oldFile: {
     type: [File, Object, String, null],
     default: null,
-    required: true,
   },
   previewShow: {
     type: Boolean,
@@ -78,7 +68,7 @@ const props = defineProps({
 
 //----添加封面
 //預覽
-const previewImageUrl = ref(null); //新增圖片預覽
+const previewImageUrl = ref(""); //新增圖片預覽
 
 //加入預覽
 function handleChange(e) {
@@ -125,9 +115,6 @@ function isShow() {
 
 watchEffect(() => {
   nextTick(() => {
-    if (token) {
-      token.value = AuthLogin.getToken();
-    }
     newImage.value = props.imgFile;
     previewShow.value = props.previewShow;
     oldFile.value = props.oldFile;
@@ -135,3 +122,25 @@ watchEffect(() => {
   });
 });
 </script>
+
+<style lang="scss" scoped>
+:deep(.n-upload-dragger),
+n-upload :deep(n-upload--dragger-inside) {
+  padding: 0;
+  width: 20rem;
+  height: 20rem;
+  overflow: hidden;
+
+  .n-icon {
+    font-size: 18rem;
+  }
+  .n-image {
+    width: 20rem;
+    height: 20rem;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+</style>
