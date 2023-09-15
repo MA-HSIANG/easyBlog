@@ -390,6 +390,7 @@ const checkUpdate = async () => {
   } catch (error) {
     if (error.response.status === 403) {
       message.error(error.response.data.msg);
+      removeToken();
       router.replace("/resgist");
     }
     if (error.response.status === 419) {
@@ -442,7 +443,7 @@ async function delArticle(row) {
 //載入分類列表
 const loadCategoryData = async () => {
   const res = await getAllCategorys(pageInfo);
-  console.log(res);
+
   //categoty select 轉換成符合組件的資料類別
   categoryLists.value = res.data.results.map((item) => {
     return {

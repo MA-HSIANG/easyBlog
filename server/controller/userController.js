@@ -236,7 +236,7 @@ exports.uploadAvatar = async (req, res, next) => {
       res.status(200).json({
         status: "success",
         data: {
-          url: "http://localhost:3000/upload/avatar/defaultUser.jpg",
+          url: process.env.YOUR_DEFAULT_AVATAR_URL,
         },
       });
     } else {

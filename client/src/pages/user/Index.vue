@@ -16,7 +16,7 @@ import Upload from "../../components/Upload.vue";
 import { getLikeBlogDatas } from "../../api/userApi";
 const router = useRouter();
 const route = useRoute();
-const msg = inject("message");
+const message = inject("message");
 const updateUserForm = ref(null);
 const isEdit = ref(false);
 const imgFile = ref(null);
@@ -62,7 +62,20 @@ const loadLikeBlogs = async () => {
       pageInfo.pageCount = Math.ceil(pageInfo.count / pageInfo.pageSize);
     }
   } catch (error) {
-    console.error(error);
+    if (error.response.status === 419) {
+      message.error(error.response.data.msg);
+      removeToken();
+      router.replace("/resgist");
+    }
+    if (error.response.status === 403) {
+      message.error(error.response.data.msg);
+      router.replace("/resgist");
+    }
+    if (error.response.status === 401) {
+      message.error(error.response.data.msg);
+      removeToken();
+      router.replace("/resgist");
+    }
   }
 };
 

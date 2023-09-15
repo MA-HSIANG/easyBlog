@@ -34,8 +34,8 @@ import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
 const route = useRoute();
-const msg = inject("message");
-
+const message = inject("message");
+import { removeToken } from "../../utils/verify";
 import { getLikeBlogDatas } from "../../api/userApi";
 import { transformTime } from "../../utils/transformTime";
 import loading from "../../components/common/Loading.vue";
@@ -68,6 +68,21 @@ const loadLikeBlogs = async () => {
     isLoading.value = false;
   } catch (error) {
     console.error(error);
+    if (error.response.status === 403) {
+      message.error(error.response.data.msg);
+      removeToken();
+      router.replace("/resgist");
+    }
+    if (error.response.status === 419) {
+      message.error(error.response.data.msg);
+      removeToken();
+      router.replace("/resgist");
+    }
+    if (error.response.status === 401) {
+      message.error(error.response.data.msg);
+      removeToken();
+      router.replace("/resgist");
+    }
   }
 };
 const toDetail = (id) => {

@@ -6,6 +6,11 @@
       "href": "/dashBoard"
     },
     {
+      "label": "個人資料",
+      "key": "userCenter",
+      "href": "/userCenter"
+    },
+    {
       "label": "權限管理",
       "key": "manage authorization",
       "href": "/dashBoard/authorization"

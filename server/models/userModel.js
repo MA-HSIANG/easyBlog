@@ -8,7 +8,7 @@ const saltRounds = 12;
 //user註冊
 async function resgist(options) {
   const bcryptPassword = await bcrypt.hash(options.password, saltRounds);
-  const defaultAvatar = "http://localhost:3000/upload/avatar/defaultUser.jpg";
+  const defaultAvatar = process.env.YOUR_DEFAULT_AVATAR_URL;
   const defaultToken = `newUser${genid.NextId()}`;
   const defaultRole = "user";
   return new Promise((resolve, reject) => {

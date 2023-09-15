@@ -134,9 +134,7 @@ router.beforeEach(async (to, from, next) => {
       next();
     }
   } catch (error) {
-    if (error.response.status === 403) {
-      //尚未登錄狀態
-    }
+    //尚未登錄狀態
   }
   next();
 });
@@ -152,37 +150,7 @@ router.beforeEach((to, from, next) => {
 //-------------全局解析守衛
 //身分判別
 router.beforeResolve(async (to, from, next) => {
-  if (to.meta.verifyId === "user") {
-    try {
-      const res = await verifyId();
-      const idCard = res.data.data.idCard;
-
-      if (idCard === "admin") {
-        next("/");
-      } else {
-        next();
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.response.status === 403) {
-          message.error(error.response.data.msg);
-          next("/resgist");
-        }
-        if (error.response.status === 419) {
-          message.error(error.response.data.msg);
-          removeToken();
-          next("/resgist");
-        }
-        if (error.response.status === 401) {
-          message.error(error.response.data.msg);
-          removeToken();
-          next("/resgist");
-        }
-      } else {
-        throw error;
-      }
-    }
-  } else if (to.meta.verifyId === "admin") {
+  if (to.meta.verifyId === "admin") {
     try {
       const res = await verifyId();
       const idCard = res.data.data.idCard;

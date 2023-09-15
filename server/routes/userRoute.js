@@ -29,7 +29,10 @@ router
   .patch(authController.verifyRole("admin"), authController.updateRole);
 router
   .route("/isUser")
-  .get(authController.verifyRole("user"), userController.gatAllUserLikeBlogData)
-  .post(authController.verifyRole("user"), userController.uploadAvatar)
-  .patch(authController.verifyRole("user"), userController.patchUser);
+  .get(
+    authController.verifyRole("user", "admin"),
+    userController.gatAllUserLikeBlogData
+  )
+  .post(authController.verifyRole("user", "admin"), userController.uploadAvatar)
+  .patch(authController.verifyRole("user", "admin"), userController.patchUser);
 module.exports = router;
