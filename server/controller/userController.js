@@ -129,8 +129,8 @@ const findBlog = async (id) => {
 //     const files = req.files;
 
 //     const s3 = new AWS.S3({
-//       accessKeyId: "AKIATITHB4FAZDM7JPZ6",
-//       secretAccessKey: "+9fDYAtqdpWcxXfqb+1a6PSaUYnwWzXokWFa02kf",
+//       accessKeyId: process.env.YOUR_IMAGE_BUCKET_KEY_ID,
+//       secretAccessKey: "process.env.YOUR_IMAGE_ACC_KEY",
 //     });
 
 //     for (const file of files) {
