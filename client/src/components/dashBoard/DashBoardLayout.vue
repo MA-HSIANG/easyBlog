@@ -22,7 +22,7 @@
       </menu>
 
       <div class="right--content-container">
-        <RouterView></RouterView>
+        <RouterView ></RouterView>
       </div>
     </div>
   </div>
@@ -48,7 +48,7 @@ import { createPinia } from "pinia";
 import { EyeOutline, ThumbsUpSharp, Person } from "@vicons/ionicons5";
 import { Comment16Regular } from "@vicons/fluent";
 import columnData from "../../data/dashBoard/dashBoardHotArticle.json";
-
+import { removeToken } from "../../utils/verify";
 const router = useRouter();
 const route = useRoute();
 const collapsed = ref(false);
@@ -75,9 +75,8 @@ const toUserSelect = (key) => {
 const verifyLogin = async () => {
   try {
     if (route.meta.userData) {
-      const data = await route.meta.userData;
-      userData.avatar = data.user.avatar;
-      userData.name = data.user.account;
+      userData.avatar = await route.meta.userData.user.avatar;
+      userData.name = await route.meta.userData.user.account;
     } else {
       removeToken();
     }
@@ -89,8 +88,7 @@ const toPage = (key, href) => {
     router.replace(href);
   } else {
     router.push("/login");
-    authLogin.delToken();
-    authLogin.adminToken = "";
+    removeToken();
   }
 };
 
@@ -121,7 +119,7 @@ onMounted(() => {
         font-size: 2.5rem;
         padding: 0 1rem;
         width: 15rem;
-       
+
         img {
           width: 100%;
           height: 100%;
@@ -135,12 +133,14 @@ onMounted(() => {
           display: flex;
 
           width: 3rem;
+          height: 3rem;
           border-radius: 50%;
           overflow: hidden;
           background-color: #fff;
           margin-right: 10px;
           img {
             width: 100%;
+            height: 100%;
           }
         }
         h4 {

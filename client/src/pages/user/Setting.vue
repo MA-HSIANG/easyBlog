@@ -39,7 +39,7 @@ import PrimaryButton from "../../components/common/PrimaryButton.vue";
 
 const router = useRouter();
 const route = useRoute();
-const msg = inject("message");
+const message = inject("message");
 const updateUserForm = ref(null);
 const isEdit = ref(false);
 const imgFile = ref(null);
@@ -53,10 +53,10 @@ const userDatas = reactive({
 });
 
 const isLoading = ref(false);
-
+const onReload = inject("onReload");
 import { uploadAvatar, updateUser } from "../../api/userApi";
 import { getLikeBlogDatas } from "../../api/userApi";
-
+import { removeToken } from "../../utils/verify";
 //驗證取得資料
 const getUserData = async () => {
   try {
@@ -73,6 +73,7 @@ const getUserData = async () => {
     }
   } catch (error) {}
 };
+
 //分頁參數
 const pageInfo = reactive({
   page: 1,
@@ -108,18 +109,31 @@ async function isSave() {
     }
 
     const res = await updateUser(userDatas);
+
     if (res.data.data.status === "success") {
-      msg.success(res.data.data.msg);
+      message.success(res.data.data.msg);
       imgFile.value = null;
       previewShow.value = false;
     }
     isLoading.value = false;
+    router.push("/userCenter");
   } catch (error) {
     console.log(error);
+    if (error.response.status === 403) {
+      message.error(error.response.data.msg);
+      router.replace("/resgist");
+    }
+    if (error.response.status === 419) {
+      message.error(error.response.data.msg);
+      removeToken();
+      router.replace("/resgist");
+    }
+    if (error.response.status === 401) {
+      message.error(error.response.data.msg);
+      removeToken();
+      router.replace("/resgist");
+    }
   }
-
-  isEdit.value = false;
-  isLoading.value = false;
 }
 const rules = {
   email: [
@@ -149,10 +163,6 @@ onMounted(() => {
 @import "../../common/style/color.scss";
 :deep(.n-upload-dragger),
 n-upload :deep(n-upload--dragger-inside) {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
   border-radius: 50%;
   width: 9rem;
   height: 8rem;
@@ -162,8 +172,8 @@ n-upload :deep(n-upload--dragger-inside) {
     font-size: 8rem;
   }
   .n-image {
-    width: 100%;
-    height: 100%;
+    width: 9rem;
+    height: 8rem;
   }
 }
 

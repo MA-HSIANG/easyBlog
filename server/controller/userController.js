@@ -1,4 +1,10 @@
 require("dotenv").config();
+//---v2
+// const AWS = require("aws-sdk");
+
+const { Upload } = require("@aws-sdk/lib-storage");
+const { S3Client } = require("@aws-sdk/client-s3");
+
 const {
   userData,
   updateUser,
@@ -7,9 +13,14 @@ const {
 } = require("../models/userModel.js");
 const { getSearchLikeBlogs, getLikeBlogs } = require("../models/likeModel.js");
 const { getBlogData } = require("../models/blogModel.js");
-
 const path = require("path");
 const fs = require("fs");
+
+//s3 key
+const s3Config = {
+  accessKeyId: process.env.YOUR_IMAGE_BUCKET_KEY_ID,
+  secretAccessKey: process.env.YOUR_IMAGE_ACC_KEY,
+};
 
 //得到單獨部落格方法
 const findBlog = async (id) => {
@@ -22,90 +33,265 @@ const findBlog = async (id) => {
   }
 };
 
-// ----------圖片上傳----------//
+// ----------圖片上傳(本地)------------------------------------------
+
+// exports.uploadImage = async (req, res, next) => {
+//   try {
+//     if (!req.files) return;
+//     //上傳檔案
+//     const files = req.files;
+//     //返回上傳網址
+//     const filesImge = [];
+//     const host = req.hostname;
+//     const port = process.env.PORT || 3000;
+//     const serverUrl = `${process.env.YOUR_UPLOAD_IMAGE_URL}://${host}:${port}`;
+
+//     for (const file of files) {
+//       const newFiles = `${file.filename}.jpg`;
+
+//       //移動檔案(上傳到temp臨時存放區, 移動到圖片區image);
+//       const sourceFile = path.join(
+//         __dirname,
+//         `../public/upload/temp/${file.filename}`
+//       );
+
+//       const targetFile = path.join(
+//         __dirname,
+//         `../public/upload/coverImage/${newFiles}`
+//       );
+//       fs.renameSync(sourceFile, targetFile);
+//       filesImge.push(`${serverUrl}/upload/coverImage/${newFiles}`);
+//     }
+// res.status(200).json({
+//   status: "succsee",
+//   data: {
+//     url: filesImge[0],
+//   },
+// });
+//   } catch (error) {
+//     res.status(500).json({
+//       status: "error",
+//       msg: "伺服器發生錯誤...上傳失敗...",
+//     });
+//   }
+// };
+//------------上傳頭貼
+// exports.uploadAvatar = async (req, res, next) => {
+//   try {
+//     if (!req.files) return;
+//     //上傳檔案
+//     const files = req.files;
+
+//     //返回上傳網址
+//     const filesImge = [];
+
+//     const host = req.hostname;
+//     const port = process.env.PORT || 3000;
+//     const serverUrl = `${process.env.YOUR_UPLOAD_IMAGE_URL}://${host}`;
+
+//     for (const file of files) {
+//       const newFiles = `user-${file.filename}.jpg`;
+//       //移動檔案(上傳到temp臨時存放區,移動到圖片區image)
+//       const sourceFile = path.join(
+//         __dirname,
+//         `../public/upload/temp/${file.filename}`
+//       );
+
+//       const targetFile = path.join(
+//         __dirname,
+//         `../public/upload/avatar/${newFiles}`
+//       );
+//       fs.renameSync(sourceFile, targetFile);
+//       filesImge.push(`${serverUrl}/upload/avatar/${newFiles}`);
+//     }
+
+//     res.status(200).json({
+//       status: "succsee",
+//       data: {
+//         url: filesImge[0],
+//       },
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       status: "error",
+//       msg: "伺服器發生錯誤...上傳失敗...",
+//     });
+//   }
+// };
+//-----------------------------------------------------
+
+//--------圖片上傳(AWS)---------------------------------
+//---v2
+// exports.uploadImage = async (req, res, next) => {
+//   try {
+//     if (!req.files) return;
+//     //上傳檔案
+//     const files = req.files;
+
+//     const s3 = new AWS.S3({
+//       accessKeyId: "AKIATITHB4FAZDM7JPZ6",
+//       secretAccessKey: "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",
+//     });
+
+//     for (const file of files) {
+//       const exp = file.mimetype.split("/")[1];
+//       const newFiles = `${file.filename}.${exp}`;
+
+//       //移動檔案(上傳到temp臨時存放區, 移動到圖片區image);
+//       const sourceFile = path.join(
+//         __dirname,
+//         `../public/upload/temp/${file.filename}`
+//       );
+
+//       const targetFile = path.join(
+//         __dirname,
+//         `../public/upload/coverImage/${newFiles}`
+//       );
+//       fs.renameSync(sourceFile, targetFile);
+//       // filesImge.push(`${serverUrl}/upload/coverImage/${newFiles}`);
+
+//       const fileStream = fs.createReadStream(targetFile);
+
+//       const params = {
+//         Bucket: "easy-blog/upload/coverImage", // 相簿位子
+//         Key: `${file.filename}`, // 你希望儲存在 S3 上的檔案名稱
+//         Body: fileStream, // 檔案
+//         ACL: "public-read", // 檔案權限
+//         ContentType: `.${exp}`, // 副檔名
+//       };
+
+//       s3.upload(params, (err, data) => {
+//         res.status(200).json({
+//           status: "succsee",
+//           data: {
+//             url: data.Location,
+//           },
+//         });
+//       });
+//     }
+//   } catch (error) {
+//     res.status(500).json({
+//       status: "error",
+//       msg: "伺服器發生錯誤...上傳失敗...",
+//     });
+//   }
+// };
+
+///----------------v3
 exports.uploadImage = async (req, res, next) => {
   try {
     if (!req.files) return;
     //上傳檔案
-    const files = req.files;
-    //返回上傳網址
-    const filesImge = [];
+    const file = req.files[0];
+    const subfolder = "upload/coverImage";
+    const exp = file.mimetype.split("/")[1];
 
-    const host = req.hostname;
-    const port = process.env.PORT || 3000;
-    const serverUrl = `${process.env.YOUR_UPLOAD_IMAGE_URL}://${host}:${port}`;
+    const sourceFile = path.join(
+      __dirname,
+      `../public/upload/temp/${file.filename}`
+    );
+    const targetFile = path.join(
+      __dirname,
+      `../public/upload/coverImage/${file.filename}.${exp}`
+    );
+    fs.renameSync(sourceFile, targetFile);
+    // filesImge.push(`${serverUrl}/upload/coverImage/${newFiles}`);
+    const fileStream = fs.createReadStream(targetFile);
 
-    for (const file of files) {
-      const newFiles = `${file.filename}.jpg`;
-      //移動檔案(上傳到temp臨時存放區,移動到圖片區image)
-      const sourceFile = path.join(
-        __dirname,
-        `../public/upload/temp/${file.filename}`
-      );
+    const upload = new Upload({
+      params: {
+        Bucket: "easy-blog", // 相簿位子
+        Key: `${subfolder}/${file.filename}.${exp}`, // 你希望儲存在 S3 上的檔案名稱
+        Body: fileStream, // 檔案
+        ACL: "public-read", // 檔案權限
+        ContentType: `.${exp}`, // 副檔名
+      },
+      client: new S3Client({
+        credentials: s3Config,
+        region: "ap-southeast-1",
+      }),
+      queueSize: 1,
+    });
+    // upload.on("httpUploadProgress", (progress) => {
+    //   console.log(progress);
+    // });
+    const d = await upload.done();
 
-      const targetFile = path.join(
-        __dirname,
-        `../public/upload/coverImage/${newFiles}`
-      );
-      fs.renameSync(sourceFile, targetFile);
-      filesImge.push(`${serverUrl}/upload/coverImage/${newFiles}`);
-    }
     res.status(200).json({
-      status: "succsee",
+      status: "success",
       data: {
-        url: filesImge[0],
+        url: d.Location,
       },
     });
   } catch (error) {
     res.status(500).json({
-      status: "error",
-      msg: "伺服器發生錯誤...上傳失敗...",
+      error,
     });
   }
 };
-//上傳頭貼
+//----v3頭貼
 exports.uploadAvatar = async (req, res, next) => {
   try {
-    if (!req.files) return;
-    //上傳檔案
-    const files = req.files;
+    if (req.files.length === 0) {
+      res.status(200).json({
+        status: "success",
+        data: {
+          url: "http://localhost:3000/upload/avatar/defaultUser.jpg",
+        },
+      });
+    } else {
+      //上傳檔案
+      const file = req.files[0];
+      const subfolder = "upload/avatar";
+      const exp = file.mimetype.split("/")[1];
 
-    //返回上傳網址
-    const filesImge = [];
-
-    const host = req.hostname;
-    const port = process.env.PORT || 3000;
-    const serverUrl = `${process.env.YOUR_UPLOAD_IMAGE_URL}://${host}:${port}`;
-
-    for (const file of files) {
-      const newFiles = `user-${file.filename}.jpg`;
-      //移動檔案(上傳到temp臨時存放區,移動到圖片區image)
       const sourceFile = path.join(
         __dirname,
         `../public/upload/temp/${file.filename}`
       );
-
       const targetFile = path.join(
         __dirname,
-        `../public/upload/avatar/${newFiles}`
+        `../public/upload/avatar/${file.filename}.${exp}`
       );
       fs.renameSync(sourceFile, targetFile);
-      filesImge.push(`${serverUrl}/upload/avatar/${newFiles}`);
-    }
+      // filesImge.push(`${serverUrl}/upload/coverImage/${newFiles}`);
+      const fileStream = fs.createReadStream(targetFile);
 
-    res.status(200).json({
-      status: "succsee",
-      data: {
-        url: filesImge[0],
-      },
-    });
+      const upload = new Upload({
+        params: {
+          Bucket: "easy-blog", // 相簿位子
+          Key: `${subfolder}/${file.filename}.${exp}`, // 你希望儲存在 S3 上的檔案名稱
+          Body: fileStream, // 檔案
+          ACL: "public-read", // 檔案權限
+          ContentType: `.${exp}`, // 副檔名
+        },
+        client: new S3Client({
+          credentials: s3Config,
+          region: "ap-southeast-1",
+        }),
+        queueSize: 1,
+      });
+      // upload.on("httpUploadProgress", (progress) => {
+      //   console.log(progress);
+      // });
+      const d = await upload.done();
+
+      res.status(200).json({
+        status: "success",
+        data: {
+          url: d.Location,
+        },
+      });
+    }
   } catch (error) {
+    console.log(error);
     res.status(500).json({
-      status: "error",
-      msg: "伺服器發生錯誤...上傳失敗...",
+      error,
     });
   }
 };
+
+//---------------------------------------------------------///
 //獲取單獨user
 exports.getUser = async (req, res) => {
   try {

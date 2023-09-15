@@ -133,7 +133,11 @@ const router = createRouter({
   history: createWebHistory(),
   // history: createWebHashHistory(),
   routes,
-  
+  scrollBehavior(to, from, saltRounds) {
+    if (to.name === "detail") {
+      return { top: 0 };
+    }
+  },
 });
 
 export { router };

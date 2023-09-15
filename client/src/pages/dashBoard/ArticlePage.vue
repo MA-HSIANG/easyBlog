@@ -257,6 +257,7 @@ const checkAdd = async () => {
       const formData = new FormData();
       formData.append("files", imgFile.value);
       const img = await uploadCover(formData);
+
       addArticle.cover_image = img.data.data.url;
     }
     isLoading.value = true;
@@ -350,7 +351,6 @@ const updateArticle = async (row) => {
       oldArticle.description = res.data.user.data[0].description;
       oldArticle.content = res.data.user.data[0].content;
       oldArticle.cover_image = res.data.user.data[0].coverImage;
-      
     }
     isLoading.value = false;
     defaultList.value = "update";

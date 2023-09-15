@@ -105,7 +105,6 @@ const naive = create({
     NScrollbar,
     NEmpty,
     NSpin,
-   
   ],
 });
 
@@ -149,6 +148,7 @@ router.beforeEach((to, from, next) => {
   }
   next();
 });
+
 //-------------全局解析守衛
 //身分判別
 router.beforeResolve(async (to, from, next) => {

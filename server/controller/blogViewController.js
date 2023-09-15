@@ -16,7 +16,10 @@ exports.createArticleView = async (req, res) => {
     const id = genid.NextId();
     const options = {
       blog_id: Number(req.params.id),
-      ip_address: req.ip,
+      ip_address:
+        req.ip ||
+        req.headers["x-forwarded-for"] ||
+        req.connection.remoteAddress,
     };
 
     const view_create_time = new Date().getTime();

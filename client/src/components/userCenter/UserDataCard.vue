@@ -82,12 +82,14 @@ const props = defineProps({
           overflow: hidden;
           border-radius: 50%;
           height: 8rem;
+
           img {
             height: 100%;
             width: 100%;
           }
         }
         span {
+          letter-spacing: -1px;
           font-size: 0.5rem;
           color: $primary-light;
         }

@@ -6,6 +6,7 @@
     @change="handleChange"
     @remove="handleRemove"
     multiple
+    accept="image/jpeg"
     :file-list="fileList"
   >
     <n-upload-dragger>
@@ -13,10 +14,10 @@
         <n-icon :depth="3"><CloudUploadOutline /></n-icon>
       </div>
       <div class="upload--img-container" v-if="previewShow && !oldImg">
-        <n-image :src="previewImageUrl"></n-image>
+        <n-image :preview-disabled="true" :src="previewImageUrl"></n-image>
       </div>
       <div class="upload--img-container" v-if="!previewShow && oldImg">
-        <n-image :src="oldUrl"></n-image>
+        <n-image :preview-disabled="true" :src="oldUrl"></n-image>
       </div>
     </n-upload-dragger>
   </n-upload>
@@ -135,6 +136,7 @@ n-upload :deep(n-upload--dragger-inside) {
     font-size: 18rem;
   }
   .n-image {
+    
     width: 20rem;
     height: 20rem;
     img {

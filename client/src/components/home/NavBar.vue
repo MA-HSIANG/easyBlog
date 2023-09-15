@@ -298,10 +298,12 @@ onMounted(() => {
 @import "../../common/style/color.scss";
 
 .logo-container {
+
   width: 15rem;
   height: 6.7rem;
   img {
     height: 100%;
+  
   }
 }
 
@@ -361,17 +363,17 @@ onMounted(() => {
   }
   .login-container {
     display: flex;
-    align-items: center;
     gap: 0.75rem;
     cursor: pointer;
     .nav--avatar-container {
-      display: flex;
       background-color: #fff;
       overflow: hidden;
       border-radius: 50%;
       width: 3rem;
+      height: 3rem;
       img {
         width: 100%;
+        height: 100%;
       }
     }
     span {

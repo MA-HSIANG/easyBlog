@@ -116,23 +116,22 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref, inject } from "vue";
+import { onMounted, reactive, ref, inject, watch, nextTick } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import VueMarkdownEditor, { xss } from "@kangc/v-md-editor";
 import { Send } from "@vicons/ionicons5";
 import Layout from "../components/home/Layout.vue";
 import Comments from "../Oldcomponents/Comments.vue";
-import Loading from "../components/common/Loading.vue";
 import PrimaryButton from "../components/common/PrimaryButton.vue";
 import Tag from "../components/home/categoryTag.vue";
+
 const router = useRouter();
 const route = useRoute();
 const message = inject("message");
 const notfiy = inject("notification");
 const dialog = inject("dialog");
-const loading = inject("loadingBar");
-const isLoading = ref(false);
 
+const onReload = inject("onReload");
 import PostUserBar from "../components/home/PostUserBar.vue";
 import NavBar from "../components/home/NavBar.vue";
 import ToolsBar from "../components/ToolsBar.vue";
@@ -293,6 +292,7 @@ const writeComment = async (e) => {
     }
   }
 };
+
 const newBlog = async () => {
   try {
     const res = await getNew3Blog();
@@ -313,6 +313,13 @@ const handleLogOut = (value) => {
     isLoggedIn.value = false;
   }
 };
+//跳轉
+const toPage = (id) => {
+  router.push(`/detail/${id}`);
+
+  onReload();
+};
+
 onMounted(() => {
   loadArticleData();
   habdleArticleViewCount();
@@ -343,7 +350,7 @@ onMounted(() => {
   }
   .article--cover-container {
     margin-bottom: 5rem;
-    width: 60rem;
+    max-width: 80rem;
     img {
       width: 100%;
       border-radius: 6px;

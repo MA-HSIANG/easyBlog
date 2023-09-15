@@ -40,7 +40,7 @@ const props = defineProps({
 @import "../../common/style/color.scss";
 .container {
   display: flex;
-
+  gap: 0.5rem;
   .avatar-container {
     display: flex;
     width: 3rem;
@@ -64,6 +64,7 @@ const props = defineProps({
       &::after {
         content: "";
         display: inline-block;
+        margin-left: 0.25rem;
         width: 3px;
         height: 3px;
         background-color: #666;
