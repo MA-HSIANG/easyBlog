@@ -4,8 +4,8 @@ const connection = require("../config/connection");
 async function articleView(id, options, view_create_time) {
   return new Promise((resolve, reject) => {
     connection.query(
-      "select * from blog_view where blog_id=? and ip_address=?",
-      [options.blog_id, options.ip_address],
+      "select * from blog_view where blog_id=? and id=?",
+      [options.blog_id, id],
       (err, data) => {
         if (err) {
           console.log(err);
@@ -17,8 +17,8 @@ async function articleView(id, options, view_create_time) {
 
         if (!data[0]) {
           connection.query(
-            "insert into blog_view (id,blog_id,ip_address,view_count,view_create_time) values(?,?,?,?,?)",
-            [id, options.blog_id, options.ip_address, 1, view_create_time],
+            "insert into blog_view (id,blog_id,view_count,view_create_time) values(?,?,?,?)",
+            [id, options.blog_id, 1, view_create_time],
             (addErr) => {
               if (addErr) {
                 console.log(addErr, "新增觀看紀錄錯誤");
