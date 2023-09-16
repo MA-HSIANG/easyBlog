@@ -13,7 +13,7 @@ export const useAuthLogin = defineStore("auth", () => {
   function saveUser(adminUser) {
     localStorage.setItem("adminUser", JSON.stringify(adminUser));
   }
-  //讀取登錄資料
+  //讀取登入資料
   function getUser() {
     return JSON.parse(localStorage.getItem("adminUser")) || "";
   }

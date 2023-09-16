@@ -105,7 +105,7 @@ async function isSave() {
       formData.append("file", imgFile.value);
       const img = await uploadAvatar(formData);
       userDatas.avatar =
-        img.data.data.url || process.env.VITE_YOUR_AVATAR_DEFAULT_URL;
+        img.data.data.url || import.meta.VITE_YOUR_AVATAR_DEFAULT_URL;
     }
 
     const res = await updateUser(userDatas);

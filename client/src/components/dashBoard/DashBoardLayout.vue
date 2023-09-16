@@ -6,13 +6,13 @@
           <a href="/"> <img src="../../../Logo.svg" alt="" /></a>
         </div>
 
-        <div class="nav--user-container">
-          <div class="nav--avatar-container">
-            <img :src="userData.avatar" alt="" />
-          </div>
-          <n-dropdown :options="userDropDown" @select="toUserSelect">
-            <h4>{{ userData.name }}</h4>
-          </n-dropdown>
+        <div
+          class="nav--logout-container"
+          v-for="(data, index) in navBarData"
+          :key="index"
+        >
+          <n-icon><component :is="data.icon" /></n-icon>
+          <h4 @click="toPage(data.key, data.href)">{{ data.label }}</h4>
         </div>
       </nav>
       <menu class="left--menu-container">
@@ -22,15 +22,14 @@
       </menu>
 
       <div class="right--content-container">
-        <RouterView ></RouterView>
+        <RouterView></RouterView>
       </div>
     </div>
   </div>
 </template>
 <script setup>
 import {
-  defineComponent,
-  onMounted,
+  markRaw,
   onBeforeMount,
   reactive,
   inject,
@@ -45,7 +44,12 @@ import { useRouter, useRoute, onBeforeRouteUpdate } from "vue-router";
 import menuData from "../../data/dashBoard/menu.json";
 import selectMenu from "naive-ui/es/_internal/select-menu";
 import { createPinia } from "pinia";
-import { EyeOutline, ThumbsUpSharp, Person } from "@vicons/ionicons5";
+import {
+  EyeOutline,
+  ThumbsUpSharp,
+  Person,
+  LogOutOutline,
+} from "@vicons/ionicons5";
 import { Comment16Regular } from "@vicons/fluent";
 import columnData from "../../data/dashBoard/dashBoardHotArticle.json";
 import { removeToken } from "../../utils/verify";
@@ -54,34 +58,12 @@ const route = useRoute();
 const collapsed = ref(false);
 const menus = reactive([...menuData.menus]);
 const message = inject("message");
-
 const onReload = inject("onReload");
-const userData = reactive({
-  avatar: "",
-  name: "",
-});
+
 // user登入下拉;
-const userDropDown = reactive([
-  { label: "退出", key: "logout", href: "logout" },
+const navBarData = markRaw([
+  { label: "登出", icon: LogOutOutline, key: "logout", href: "logout" },
 ]);
-//下拉選單
-const toUserSelect = (key) => {
-  if (key === "logout") {
-    router.push("/login");
-    removeToken();
-  }
-};
-//登錄資料
-const verifyLogin = async () => {
-  try {
-    if (route.meta.userData) {
-      userData.avatar = await route.meta.userData.user.avatar;
-      userData.name = await route.meta.userData.user.account;
-    } else {
-      removeToken();
-    }
-  } catch (error) {}
-};
 
 const toPage = (key, href) => {
   if (key !== "logout") {
@@ -91,10 +73,6 @@ const toPage = (key, href) => {
     removeToken();
   }
 };
-
-onMounted(() => {
-  verifyLogin();
-});
 </script>
 <style lang="scss" scoped>
 @import "../../common/style/main.scss";
@@ -125,30 +103,25 @@ onMounted(() => {
           height: 100%;
         }
       }
-      .nav--user-container {
+      .nav--logout-container {
         display: flex;
         align-items: center;
+        font-size: 1.8rem;
 
-        .nav--avatar-container {
+        .n-icon {
           display: flex;
-
-          width: 3rem;
-          height: 3rem;
-          border-radius: 50%;
-          overflow: hidden;
-          background-color: #fff;
-          margin-right: 10px;
-          img {
-            width: 100%;
-            height: 100%;
-          }
+          margin-right: 5px;
+          color: $primary-white;
         }
         h4 {
-          font-size: 2rem;
           font-weight: 500;
           letter-spacing: -0.25px;
-          color: #f3f4f6;
+          color: $primary-white;
           cursor: pointer;
+
+          &:hover {
+            color: $primary-light;
+          }
         }
       }
     }

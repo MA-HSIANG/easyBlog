@@ -181,12 +181,12 @@ async function updateUser(id, options) {
     );
   });
 }
-//user登錄狀態更新
+//user登入狀態更新
 async function updateUserLogin(id) {
   return new Promise((resolve, reject) => {
     connection.query("update user set isLogin=? where id=?", [0, id], (err) => {
       if (err) {
-        console.log(err, "更新登錄狀態更新遇到問題");
+        console.log(err, "更新登入狀態更新遇到問題");
         reject({
           status: "fail",
           msg: "資料庫發生錯誤...請通知管理人員或稍後在試!!",

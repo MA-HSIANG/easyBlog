@@ -87,7 +87,11 @@
       <div class="nav--avatar-container">
         <img :src="userDatas.avatar" alt="home-avatar" />
       </div>
-      <n-dropdown :options="userDropDown" @select="toUserSelect">
+      <n-dropdown
+        class="nav--user-dropdown"
+        :options="userDropDown"
+        @select="toUserSelect"
+      >
         <span>{{ userDatas.name }}</span>
       </n-dropdown>
     </div>
@@ -298,12 +302,10 @@ onMounted(() => {
 @import "../../common/style/color.scss";
 
 .logo-container {
-
   width: 15rem;
   height: 6.7rem;
   img {
     height: 100%;
-  
   }
 }
 
@@ -374,6 +376,11 @@ onMounted(() => {
       img {
         width: 100%;
         height: 100%;
+      }
+      .nav--user-dropdown {
+        .n-dropdown {
+          z-index: 999;
+        }
       }
     }
     span {

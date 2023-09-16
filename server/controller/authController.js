@@ -71,7 +71,7 @@ exports.verifyToken = async (req, res, next) => {
 
     if (checkUser.results.token !== token) {
       res.status(401).json({
-        msg: "該帳號已經在另外一個客戶端登錄!!請確認是否為本人或通知管理人員處理!!",
+        msg: "該帳號已經在另外一個客戶端登入!!請確認是否為本人或通知管理人員處理!!",
       });
       return;
     }
@@ -79,7 +79,7 @@ exports.verifyToken = async (req, res, next) => {
     next();
   } catch (error) {
     if (error.message === "jwt expired") {
-      error.message = "帳號登錄逾期...請重新登錄!!";
+      error.message = "帳號登入逾期...請重新登入!!";
     }
     res.status(419).json({
       msg: error.message,
@@ -136,7 +136,7 @@ exports.loginVerified = (req, res) => {
     if (user.role === "admin") {
       menuData = [
         { label: "後台管理", key: "dashBoard", icon: "Pencil" },
-        { label: "退出登錄", key: "logout", icon: "LogoutIcon" },
+        { label: "退出登入", key: "logout", icon: "LogoutIcon" },
       ];
     }
     if (user.role === "user") {
@@ -147,7 +147,7 @@ exports.loginVerified = (req, res) => {
           icon: "Pencil",
         },
         {
-          label: "退出登錄",
+          label: "退出登入",
           key: "logout",
           icon: "LogoutIcon",
         },

@@ -193,7 +193,21 @@ const loadWebDatas = async () => {
       isLoading.value = false;
     }
   } catch (error) {
-    console.error(error);
+    if (error.response.status === 403) {
+      message.error(error.response.data.msg);
+      removeToken();
+      router.replace("/resgist");
+    }
+    if (error.response.status === 419) {
+      message.error(error.response.data.msg);
+      removeToken();
+      router.replace("/resgist");
+    }
+    if (error.response.status === 401) {
+      message.error(error.response.data.msg);
+      removeToken();
+      router.replace("/resgist");
+    }
   }
 };
 

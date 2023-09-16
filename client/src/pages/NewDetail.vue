@@ -1,5 +1,5 @@
 <template>
-  <Layout :hot_open="false">
+  <Layout :hot_open="false" :closeFixed="true">
     <template #nav>
       <NavBar :open="false" @handleLogOut="handleLogOut" />
     </template>

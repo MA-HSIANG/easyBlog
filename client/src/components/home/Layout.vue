@@ -1,10 +1,17 @@
 <template>
   <div class="container">
-    <header class="header-container">
+    <header
+      class="header-container"
+      :class="isFixed && !closeFixed ? 'isFixed' : ''"
+    >
       <slot name="nav"></slot>
     </header>
 
-    <section class="hot-container" v-if="props.hot_open">
+    <section
+      class="hot-container"
+      :class="isFixed && !closeFixed ? 'isMarginTop' : ''"
+      v-if="props.hot_open"
+    >
       <slot name="hot_blog"></slot>
     </section>
 
@@ -29,6 +36,7 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 const props = defineProps({
@@ -36,6 +44,24 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  closeFixed: {
+    type: Boolean,
+    default: false,
+  },
+});
+const isFixed = ref(false);
+
+const scrollY = ref(0);
+const handleScroll = () => {
+  scrollY.value = window.scrollY;
+
+  if (scrollY.value > 0) {
+    isFixed.value = true;
+  }
+};
+
+onMounted(() => {
+  addEventListener("scroll", handleScroll);
 });
 </script>
 
@@ -47,11 +73,20 @@ const props = defineProps({
   justify-content: space-between;
   align-items: center;
   padding: 0 10rem;
-  margin-bottom: 2rem;
   background-color: $primary-color;
   font-size: 2rem;
   letter-spacing: 2.5px;
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+  margin-bottom: 2rem;
+}
+.isFixed {
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  z-index: 988;
+}
+.noneFixed {
+  position: none;
 }
 .hot-container {
   display: grid;
@@ -59,6 +94,12 @@ const props = defineProps({
   height: 45rem;
   column-gap: 1rem;
   padding: 0 1rem;
+}
+.isMarginTop {
+  margin-top: 9rem;
+}
+.noneMarginTop {
+  margin-top: 0;
 }
 .main-container {
   max-width: 130rem;

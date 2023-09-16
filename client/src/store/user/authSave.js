@@ -8,7 +8,7 @@ export const useUserStore = defineStore("save", () => {
   function saveUser(userData) {
     localStorage.setItem("user", JSON.stringify(userData));
   }
-  //讀取登錄資料
+  //讀取登入資料
   function getUser() {
     return JSON.parse(localStorage.getItem("user")) || "";
   }

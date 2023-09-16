@@ -37,7 +37,7 @@
         </n-form-item>
         <div class="btn_submit">
           <n-button type="primary" :disabled="!user.password" @click="userLogin"
-            >登錄</n-button
+            >登入</n-button
           >
         </div>
         <div class="btn_change">

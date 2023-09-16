@@ -53,15 +53,14 @@ const themeOverrides = {
 <style lang="scss" scoped>
 @import "./common/style/main.scss";
 
-.fade-enter-active {
-  transition: all 0.6s ease-in;
-}
+.fade-enter-active,
 .fade-leave-active {
-  transition: all 0.6s cubic-bezier(1, 0.5, 0.6, 1);
+  transition: all 0.6s ease-in-out;
+  opacity: 1;
 }
+
 .fade-leave-to,
 .fade-enter-from {
-  transform: translateX(100%);
   opacity: 0;
 }
 </style>

@@ -55,7 +55,7 @@ const loadLikeBlogs = async () => {
   try {
     isLoading.value = true;
     const res = await getLikeBlogDatas(pageInfo);
-    console.log(res);
+   
     if (res.status === 200) {
       res.data.like_blogs = res.data.like_blogs.map((like) => {
         like.create_time = transformTime(like.create_time);

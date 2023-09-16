@@ -49,7 +49,7 @@
           >
         </div>
         <div class="btn_change">
-          <n-button @click="toLogin" tag="a" text>有帳號了?點我登錄!</n-button>
+          <n-button @click="toLogin" tag="a" text>有帳號了?點我登入!</n-button>
         </div>
       </n-form>
     </template>
