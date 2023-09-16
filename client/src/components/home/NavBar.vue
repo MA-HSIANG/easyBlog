@@ -70,7 +70,11 @@
       </div>
       <div class="mobile-line"></div>
 
-      <div class="mobile--tags-container">
+      <div
+        :class="
+          !isMobileSearch ? 'close--mobile--tags' : 'mobile--tags-container'
+        "
+      >
         <n-tag
           v-for="tag in NavBarcategoryLists"
           @click="toTag(tag.value)"
@@ -336,8 +340,10 @@ onMounted(() => {
   align-items: center;
   padding: 0 1rem;
   gap: 1.5rem;
+  overflow-x: hidden;
   .search-container {
     position: relative;
+
     input {
       display: inline-block;
       border-radius: 2px;
