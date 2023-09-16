@@ -84,7 +84,7 @@ async function login(options) {
             });
           } else {
             //解密
-            const result = bcrypt.compare(
+            const result = await bcrypt.compare(
               options.password,
               userDate[0].password
             );
@@ -92,7 +92,7 @@ async function login(options) {
             if (result) {
               //創建用戶令牌訊息
               const id = userDate[0].id;
-              //創建密鑰字符串 uuid
+              //創建密鑰字符串
               const secret = process.env.YOUR_JWT_SECRET;
               //創建令牌
               const token = jwt.sign({ id }, secret, {
