@@ -340,7 +340,7 @@ onMounted(() => {
   align-items: center;
   padding: 0 1rem;
   gap: 1.5rem;
-  overflow-x: hidden;
+
   .search-container {
     position: relative;
 

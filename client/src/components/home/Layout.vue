@@ -84,7 +84,6 @@ onMounted(() => {
   top: 0px;
   width: 100%;
   z-index: 988;
- 
 }
 .noneFixed {
   position: none;
