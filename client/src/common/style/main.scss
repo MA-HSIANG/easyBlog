@@ -42,7 +42,6 @@ textarea {
 }
 .container {
   max-width: 200rem;
-
 }
 .dashBoard-container {
   width: 120rem;
@@ -57,6 +56,9 @@ textarea {
 
 .mobile--tags-container {
   display: none;
+  .n-tag {
+    display: none;
+  }
 }
 .mobile--commemnt-submit {
   display: none;
