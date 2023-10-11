@@ -1,6 +1,13 @@
 # EasyBlog
 
-> 歡迎使用 EasyBlog，此為個人手刻前後端 Blog 作品。
+> 歡迎使用 EasyBlog，此為個人手刻前後端 Blog 作品。功能盡量不使用套件完成!為個人邏輯練習作品。
+
+## 預設
+1. 本專案使用 localStorage 進行token儲存，如有需要可改為cookie方法，但要注意跨域問題。
+2. 密碼加密使用 bcrypt套件，可到 userModel 內進行**加鹽**長度的設定。
+3. token使用jsonWebToken創建，預設為10分鐘過期，可自行使用 YOUR_JWT_EXPIRE 再.env中設定修改。
+4. 預設登入系統無法多點登錄，單個帳號登入後另一個client端會被擠下線。
+
 
 ## 版本
 
@@ -76,7 +83,7 @@
 - POST /uploadImage 上傳封面圖片
 - GET /webAllDatas admin 後台看板資料
 
-CRUD (admin 腳色)
+CRUD (admin 角色)
 
 - GET / 獲取首頁文章(搜尋關鍵字、分頁邏輯)
 - POST / 新增文章
@@ -86,7 +93,7 @@ CRUD (admin 腳色)
 
 ### 分類(/api/v1/category)
 
-CRUD (admin 腳色)
+CRUD (admin 角色)
 
 - GET / 取得所有分類(含分頁邏輯、搜索)
 - POST / 新增分類
@@ -117,7 +124,7 @@ CRUD (admin 腳色)
 
 目前上傳空間為:render.com、圖片:AWS S3 儲存桶、MySQL:AWS RDS。狀態:動態
 
-#### EasyBlog v1.0 :
+#### EasyBlog:
 
 [EasyBlog](https://blog-server-6lno.onrender.com)
 
