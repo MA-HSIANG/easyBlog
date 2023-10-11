@@ -22,6 +22,7 @@
       </menu>
 
       <div class="right--content-container">
+      
         <RouterView></RouterView>
       </div>
     </div>
@@ -38,6 +39,7 @@ import {
   computed,
   watchEffect,
   nextTick,
+  watch,
 } from "vue";
 import { useRouter, useRoute, onBeforeRouteUpdate } from "vue-router";
 
@@ -73,6 +75,7 @@ const toPage = (key, href) => {
     removeToken();
   }
 };
+
 </script>
 <style lang="scss" scoped>
 @import "../../common/style/main.scss";
@@ -142,8 +145,17 @@ const toPage = (key, href) => {
     }
     .right--content-container {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+      .breadcrumb--container {
+        width: 100%;
+        padding: 2rem 0;
+        margin-left: 10rem;
+        .breadcrumb--isHref {
+          color: red;
+        }
+      }
     }
   }
 }

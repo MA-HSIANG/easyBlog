@@ -273,7 +273,7 @@ const toDashboard = () => {
 
 const toUserSelect = async (key) => {
   if (key === "editor") {
-    router.push("/userCenter");
+    router.replace("/dashBoard");
   }
   if (key === "dashBoard") {
     router.replace("/dashBoard");

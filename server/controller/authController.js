@@ -133,10 +133,50 @@ exports.loginVerified = (req, res) => {
     const user = req.user.results;
 
     let menuData;
+    let dashBoardMenu;
     if (user.role === "admin") {
       menuData = [
         { label: "後台管理", key: "dashBoard", icon: "Pencil" },
         { label: "退出登入", key: "logout", icon: "LogoutIcon" },
+      ];
+      dashBoardMenu = [
+        {
+          label: "後台首頁",
+          key: "dashBoard",
+          href: "/dashBoard",
+        },
+        {
+          label: "我的資料",
+          key: "isLabel",
+          children: [
+            {
+              label: "個人資料",
+              key: "myData",
+              href: "/dashBoard/userCenter",
+            },
+            {
+              label: "我的點讚",
+              key: "myLike",
+              href: "/dashBoard/myLike",
+            },
+            { label: "設定", key: "setting", href: "/dashBoard/setting" },
+          ],
+        },
+        {
+          label: "權限管理",
+          key: "manage authorization",
+          href: "/dashBoard/authorization",
+        },
+        {
+          label: "文章管理",
+          key: "manage article",
+          href: "/dashBoard/article",
+        },
+        {
+          label: "分類管理",
+          key: "manage category",
+          href: "/dashBoard/category",
+        },
       ];
     }
     if (user.role === "user") {
@@ -152,6 +192,16 @@ exports.loginVerified = (req, res) => {
           icon: "LogoutIcon",
         },
       ];
+      dashBoardMenu = [
+        { label: "個人資料", key: "myData", href: "/dashBoard" },
+
+        {
+          label: "我的點讚",
+          key: "myLike",
+          href: "/dashBoard/myLike",
+        },
+        { label: "設定", key: "setting", href: "/dashBoard/setting" },
+      ];
     }
 
     res.status(200).json({
@@ -159,6 +209,7 @@ exports.loginVerified = (req, res) => {
       data: {
         user,
         menu: menuData,
+        dashBoard: dashBoardMenu,
       },
     });
   } catch (error) {

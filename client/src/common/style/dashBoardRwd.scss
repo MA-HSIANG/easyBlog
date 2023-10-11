@@ -6,6 +6,29 @@
       width: 100rem !important;
     }
   }
+  .menu--children {
+    font-size: 1rem;
+    line-height: 2rem;
+    pointer-events: auto !important;
+    letter-spacing: 0;
+  }
+  .noHover {
+    pointer-events: auto !important;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: $font-gray;
+    &:hover,
+    &:active {
+      border-left: none !important;
+      margin-left: 0 !important;
+    }
+  }
+  .arrIcon {
+    width: 2rem;
+    height: 2rem;
+    top: 2px;
+    right: -2px !important;
+  }
 }
 //940
 @media (max-width: 58.75rem) {

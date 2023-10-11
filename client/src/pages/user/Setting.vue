@@ -116,7 +116,7 @@ async function isSave() {
       previewShow.value = false;
     }
     isLoading.value = false;
-    router.push("/userCenter");
+    router.push("/dashBoard");
   } catch (error) {
     console.log(error);
     if (error.response.status === 403) {

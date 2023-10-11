@@ -106,6 +106,7 @@ onMounted(async () => {
   viewCount.value = await getArticleData().handleBlogViews(
     Number(props.blogId)
   );
+
   commentCount.value = await getArticleData().handleBlogCommentCounts(
     Number(props.blogId)
   );

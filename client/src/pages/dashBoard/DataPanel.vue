@@ -1,6 +1,6 @@
 <template>
   <loading class="loadingBar" v-if="isLoading">資料加載中...</loading>
-  <div class="dashBoard-container" v-else>
+  <div class="dashBoard-container" v-if="!isLoading && isAdmin">
     <n-grid cols="8" x-gap="8" y-gap="12" item-responsive>
       <n-grid-item span="0:8 800:8 1000:2">
         <n-card size="small" :header-style="card_header_style" hoverable>
@@ -114,6 +114,12 @@
       </n-grid-item>
     </n-grid>
   </div>
+  <div v-if="!isLoading && !isAdmin">
+    <UserDataCard
+      :userDatas="userDatas"
+      :likeCount="pageInfoUser.count"
+    ></UserDataCard>
+  </div>
 </template>
 <script setup>
 import { onMounted, reactive, inject, h, ref, computed } from "vue";
@@ -129,7 +135,7 @@ const router = useRouter();
 const route = useRoute();
 const collapsed = ref(false);
 const isLoading = ref(false);
-const msg = inject("message");
+const message = inject("message");
 const notfiy = inject("notification");
 const dialog = inject("dialog");
 
@@ -138,6 +144,126 @@ import { getArticleData } from "../../store/articleStore";
 import { getAllWebDatas } from "../../api/blogApi";
 import { transformTime } from "../../utils/transformTime";
 
+//user
+import { uploadAvatar, updateUser } from "../../api/userApi";
+import UserDataCard from "../../components/userCenter/UserDataCard.vue";
+import Upload from "../../components/Upload.vue";
+import { getLikeBlogDatas } from "../../api/userApi";
+
+const updateUserForm = ref(null);
+const isEdit = ref(false);
+const imgFile = ref(null);
+const previewShow = ref(false);
+const userDatas = reactive({
+  id: "",
+  avatar: "",
+  name: "",
+  email: "",
+  create_time: "",
+});
+
+//驗證取得資料
+const getUserData = async () => {
+  try {
+    if (route.meta.userData) {
+      const data = await route.meta.userData;
+      userDatas.id = data.user.id;
+      userDatas.avatar = data.user.avatar;
+      userDatas.name = data.user.account;
+      userDatas.email = data.user.email;
+      userDatas.create_time = transformTime(data.user.create_time);
+      oldAvatar.value = data.user.avatar;
+    } else {
+      removeToken();
+    }
+  } catch (error) {}
+};
+//分頁參數
+const pageInfoUser = reactive({
+  page: 1,
+  pageSize: 8,
+  //列表資料總數
+  count: 0,
+  //總頁數
+  pageCount: 0,
+});
+const loadLikeBlogs = async () => {
+  try {
+    const res = await getLikeBlogDatas(pageInfo);
+    if (res.status === 200) {
+      pageInfo.count = res.data.counts;
+      pageInfo.pageCount = Math.ceil(pageInfo.count / pageInfo.pageSize);
+    }
+  } catch (error) {
+    if (error.response.status === 419) {
+      message.error(error.response.data.msg);
+      removeToken();
+      router.replace("/resgist");
+    }
+    if (error.response.status === 403) {
+      message.error(error.response.data.msg);
+      router.replace("/resgist");
+    }
+    if (error.response.status === 401) {
+      message.error(error.response.data.msg);
+      removeToken();
+      router.replace("/resgist");
+    }
+  }
+};
+
+//編輯
+const editor = () => {
+  isEdit.value = true;
+};
+//儲存
+async function isSave() {
+  try {
+    //頭貼
+    isLoading.value = true;
+    if (imgFile) {
+      const formData = new FormData();
+      formData.append("file", imgFile.value);
+      const img = await uploadAvatar(formData);
+      userDatas.avatar =
+        img.data.data.url ||
+        "http://localhost:3000/upload/avatar/defaultUser.jpg";
+    }
+
+    const res = await updateUser(userDatas);
+
+    if (res.data.data.status === "success") {
+      msg.success(res.data.data.msg);
+      imgFile.value = null;
+      previewShow.value = false;
+    }
+  } catch (error) {
+    console.log(error);
+    if (error.response.status === 400) {
+      msg.error(error.response.data.msg);
+    }
+  }
+  isEdit.value = false;
+  isLoading.value = false;
+}
+const rules = {
+  email: [
+    {
+      required: true,
+      validator(rule, val) {
+        if (!val) {
+          return new Error("請輸入郵件...");
+        }
+        if (!/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-z0-9]+$/.test(val)) {
+          return new Error("請輸入正確的電子郵件格式...");
+        }
+        return true;
+      },
+      trigger: ["input", "blur"],
+    },
+  ],
+};
+//-------------------------------------
 const onReload = inject("onReload");
 const toPage = (key, menu) => {
   if (key !== "logout") {
@@ -160,7 +286,8 @@ const categoryLists = ref([]); //熱門文章列
 //文章列表
 const columns_header = reactive(columnData.headers);
 const columns = reactive([...columns_header]);
-
+//判斷
+const isAdmin = ref(true);
 const loadWebDatas = async () => {
   try {
     isLoading.value = true;
@@ -194,9 +321,11 @@ const loadWebDatas = async () => {
     }
   } catch (error) {
     if (error.response.status === 403) {
-      message.error(error.response.data.msg);
-      removeToken();
-      router.replace("/resgist");
+      isLoading.value = false;
+      isAdmin.value = false;
+      // message.error(error.response.data.msg);
+      // removeToken();
+      // router.replace("/resgist");
     }
     if (error.response.status === 419) {
       message.error(error.response.data.msg);
@@ -238,8 +367,11 @@ const card_header_style = reactive({
   backgroundColor: "#0284c7",
   borderRadius: "6px 6px 0 0",
 });
+
 onMounted(() => {
   loadWebDatas();
+  getUserData();
+  loadLikeBlogs();
 });
 </script>
 <style lang="scss" scoped>
@@ -291,10 +423,12 @@ onMounted(() => {
 
     .avatar-container {
       width: 3.6rem;
+      height: 3.6rem;
       border-radius: 50%;
       overflow: hidden;
       img {
         width: 100%;
+        height: 100%;
       }
     }
     .user--comment-container {
@@ -314,6 +448,7 @@ onMounted(() => {
       p {
         font-size: 1.4rem;
         color: $font-black-gray;
+        width: 30rem;
       }
       .n-button {
         padding: 0.25rem 0.5rem;

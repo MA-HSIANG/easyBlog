@@ -1,3 +1,4 @@
+PrimaryButton
 <template>
   <Layout :hot_open="false" :closeFixed="true">
     <template #nav>
@@ -32,7 +33,7 @@
         <ToolsBar :blogId="blog_id" :show="false" />
       </div>
       <div class="action-container">
-        <div class="action--comment">{{ pageInfo.count }} comment</div>
+        <div class="action--comment">{{ comments_reply_count }} comment</div>
 
         <div class="action--comment-border">
           <div class="comment-zero" v-if="commentDatas.length === 0">
@@ -41,7 +42,7 @@
           <div
             v-else
             class="action---comment-content"
-            v-for="data in commentDatas"
+            v-for="(data, index) in commentDatas"
             :key="data.id"
           >
             <div class="avatar-container">
@@ -52,6 +53,27 @@
               <h4>{{ data.user_name }}</h4>
               <div>{{ data.create_time }}</div>
               <p>{{ data.content }}</p>
+              <span class="user--reply">回復</span>
+              <!--2級回復-->
+              <Reply
+                :blog_id="route.params.id"
+                :parent_comment_id="data.id"
+                :parent_comment_user_id="data.user_id"
+                :subReply="subReply"
+                @handelUpdateReply="handelUpdateReply"
+              />
+
+              <div class="reply--container" v-if="isLoggedIn">
+                <input
+                  v-model="reply_content[index]"
+                  type="text"
+                  :placeholder="'請回復' + data.user_name + '的文章'"
+                />
+
+                <PrimaryButton @click="writeReply(data.id, data.user_id)">
+                  <template #name> 送出 </template>
+                </PrimaryButton>
+              </div>
             </div>
           </div>
         </div>
@@ -135,10 +157,16 @@ const onReload = inject("onReload");
 import PostUserBar from "../components/home/PostUserBar.vue";
 import NavBar from "../components/home/NavBar.vue";
 import ToolsBar from "../components/ToolsBar.vue";
+import Reply from "../components/Reply.vue";
 import { getBlog, getNew3Blog } from "../api/blogApi";
 import { createArticleView } from "../api/blogViewApi";
 import { transformTime } from "../utils/transformTime";
-import { getBlogComments, createComment } from "../api/commentsApi";
+import {
+  getBlogComments,
+  getBlogReply,
+  createComment,
+  createReply,
+} from "../api/commentsApi";
 import { removeToken } from "../utils/verify";
 
 const blog_id = Number(route.params.id);
@@ -155,6 +183,7 @@ const data = reactive({
   create_time: "",
   category_name: "",
 });
+
 //登陸了沒
 const isLoggedIn = ref(false);
 //渲染評論內容
@@ -165,7 +194,11 @@ const comment_content = ref("");
 const userData = ref({});
 //最新文章
 const newBlogData = ref([]);
-
+//發送回復
+const reply_content = ref([]);
+const subReply = ref(false);
+//評論+回復總數
+const comments_reply_count = ref(0);
 //驗證登入
 const verifyLogin = async () => {
   try {
@@ -255,11 +288,14 @@ const loadCommentsData = async () => {
       //分頁
       pageInfo.count = res.data.count.length;
       pageInfo.pageCount = Math.ceil(pageInfo.count / pageInfo.pageSize);
+      //獲取評論跟回復總數
+      comments_reply_count.value = res.data.counts;
     }
   } catch (error) {
     console.error(error);
   }
 };
+
 //發表評論(一級)
 const writeComment = async (e) => {
   try {
@@ -292,7 +328,49 @@ const writeComment = async (e) => {
     }
   }
 };
+//發表評論(二級)
+const writeReply = async (parent_comment_id, parent_comment_user_id) => {
+  try {
+    if (reply_content.value === "") {
+      message.error("評論內容不能為空!!");
+      return;
+    }
 
+    const res = await createReply(
+      blog_id,
+      parent_comment_id,
+      parent_comment_user_id,
+      reply_content.value
+    );
+
+    if (res.data.data.status === "success") {
+      message.success(res.data.data.msg);
+      reply_content.value.length = 0;
+      subReply.value = true;
+    }
+  } catch (error) {
+    if (error.response.status === 419) {
+      message.error(error.response.data.msg);
+      removeToken();
+      router.replace("/resgist");
+    }
+    if (error.response.status === 403) {
+      message.error(error.response.data.msg);
+      router.replace("/resgist");
+    }
+    if (error.response.status === 401) {
+      message.error(error.response.data.msg);
+      removeToken();
+      router.replace("/resgist");
+    }
+  }
+};
+//回傳reply刷新完畢
+const handelUpdateReply = (value) => {
+  if (value) {
+    subReply.value = false;
+  }
+};
 const newBlog = async () => {
   try {
     const res = await getNew3Blog();
@@ -383,6 +461,7 @@ onMounted(() => {
       font-size: 1.6rem;
       letter-spacing: 0.5px;
       line-height: 3rem;
+
       .comment-zero {
         padding: 5rem 0;
         text-align: center;
@@ -391,19 +470,25 @@ onMounted(() => {
       }
       .action---comment-content {
         display: flex;
+
         padding: 2rem 1rem;
         gap: 1rem;
 
         .avatar-container {
           width: 10rem;
+          height: 10rem;
           border-radius: 50%;
           background-color: #fff;
           overflow: hidden;
           img {
             width: 100%;
+            height: 100%;
           }
         }
         .user--comment-container {
+          width: 80%;
+          word-wrap: break-word;
+
           h4 {
             font-size: 2.5rem;
             font-weight: 500;
@@ -415,12 +500,39 @@ onMounted(() => {
           p {
             color: $font-black-gray;
           }
+
+          .user--reply {
+            font-size: 1.4rem;
+            background-color: $reply-bgc;
+            color: $reply-text;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            cursor: pointer;
+          }
+          .reply--container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            border-top: 1px solid $reply-bgc;
+
+            input {
+              display: inline-block;
+              margin-top: 1rem;
+              width: 80%;
+              border-radius: 2px;
+              border: 1px solid black;
+              padding: 1rem 0.75rem;
+              caret-color: $fouce-color;
+              padding-left: 2rem;
+            }
+          }
         }
       }
     }
 
     .paginator-container {
-      margin-top: 1rem;
+      margin-top: 2rem;
     }
   }
   .subComment-container {
@@ -428,9 +540,11 @@ onMounted(() => {
     gap: 1rem;
     padding: 2rem 1rem;
     border: 3px dashed $primary-light;
+    height: 17rem;
 
     .subComment-zero {
       display: flex;
+      align-items: center;
       margin: 0 auto;
       font-size: 1.8rem;
       color: $font-gray;
@@ -443,6 +557,7 @@ onMounted(() => {
 
       img {
         width: 100%;
+        height: 100%;
       }
     }
     .subComment-input {

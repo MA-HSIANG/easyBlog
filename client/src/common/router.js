@@ -63,35 +63,35 @@ const routes = [
     component: ResgistPage,
     meta: { title: "註冊" },
   },
-  {
-    path: "/userCenter",
-    name: "userCenter",
-    component: UserCenter,
-    meta: {
-      verifyId: "user",
-      title: "我的空間",
-    },
-    children: [
-      {
-        path: "/userCenter",
-        name: "userCenter",
-        component: UserData,
-        meta: { title: "個人資料" },
-      },
-      {
-        path: "setting",
-        name: "setting",
-        component: Setting,
-        meta: { title: "設定" },
-      },
-      {
-        path: "myLike",
-        name: "myLike",
-        component: LikeList,
-        meta: { title: "我的點讚" },
-      },
-    ],
-  },
+  // {
+  //   path: "/userCenter",
+  //   name: "userCenter",
+  //   component: UserCenter,
+  //   meta: {
+  //     verifyId: "user",
+  //     title: "我的空間",
+  //   },
+  //   children: [
+  //     {
+  //       path: "/userCenter",
+  //       name: "userCenter",
+  //       component: UserData,
+  //       meta: { title: "個人資料" },
+  //     },
+  //     {
+  //       path: "setting",
+  //       name: "setting",
+  //       component: Setting,
+  //       meta: { title: "設定" },
+  //     },
+  //     {
+  //       path: "myLike",
+  //       name: "myLike",
+  //       component: LikeList,
+  //       meta: { title: "我的點讚" },
+  //     },
+  //   ],
+  // },
   {
     path: "/dashBoard",
     name: "dashBoard",
@@ -106,6 +106,7 @@ const routes = [
         path: "/dashBoard",
         name: "dashBoard",
         component: DataPanel,
+        meta: { title: "後臺首頁" },
       },
       {
         path: "authorization",
@@ -124,6 +125,25 @@ const routes = [
         name: "article",
         component: Article,
         meta: { title: "文章管理" },
+      },
+      //user
+      {
+        path: "userCenter",
+        name: "userCenter",
+        component: UserData,
+        meta: { title: "個人資料" },
+      },
+      {
+        path: "setting",
+        name: "setting",
+        component: Setting,
+        meta: { title: "設定" },
+      },
+      {
+        path: "myLike",
+        name: "myLike",
+        component: LikeList,
+        meta: { title: "我的點讚" },
       },
     ],
   },

@@ -40,9 +40,11 @@ const props = defineProps({
 @import "../../common/style/color.scss";
 .container {
   display: flex;
+
   gap: 0.5rem;
   .avatar-container {
     display: flex;
+
     width: 3rem;
     border-radius: 50%;
     overflow: hidden;
@@ -50,6 +52,7 @@ const props = defineProps({
     margin-top: 1rem;
     img {
       width: 100%;
+      height: 100%;
     }
   }
   .blog-data {
